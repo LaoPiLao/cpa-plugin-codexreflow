@@ -61,13 +61,19 @@ import (
 	"net/http"
 	"unsafe"
 
-	"github.com/router-for-me/CLIProxyAPI/v7/sdk/pluginabi"
-	"github.com/router-for-me/CLIProxyAPI/v7/sdk/pluginapi"
+	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginabi"
+	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginapi"
 )
 
-const pluginIdentifier = "codexcomp"
+const pluginIdentifier = "codexreflow"
 
 var pluginVersion = "dev"
+var pluginAuthor = "CodexReflow contributors"
+
+// CPA requires nonempty source metadata even for a local development build.
+// This marker is explicitly NOT a published GitHub repository. Release builds
+// must replace it with the real repository; never claim the upstream as ours.
+var pluginRepository = "local://codexreflow"
 
 func main() {}
 
@@ -125,7 +131,11 @@ func cliproxyPluginFree(ptr unsafe.Pointer, _ C.size_t) {
 }
 
 //export cliproxyPluginShutdown
-func cliproxyPluginShutdown() {}
+func cliproxyPluginShutdown() {
+	foldedWSAliases.clear()
+	foldedWSReplays.clear()
+	incrementalWS.clear()
+}
 
 // --- envelope helpers ---
 
@@ -183,11 +193,14 @@ type registration struct {
 }
 
 type registrationCapability struct {
-	ModelRouter           bool     `json:"model_router"`
-	Executor              bool     `json:"executor"`
-	ExecutorModelScope    string   `json:"executor_model_scope"`
-	ExecutorInputFormats  []string `json:"executor_input_formats"`
-	ExecutorOutputFormats []string `json:"executor_output_formats"`
+	StreamChunkInterceptor bool     `json:"response_stream_interceptor"`
+	RequestLifecycle       bool     `json:"request_lifecycle_plugin"`
+	ModelRouter            bool     `json:"model_router"`
+	RequestInterceptor     bool     `json:"request_interceptor"`
+	Executor               bool     `json:"executor"`
+	ExecutorModelScope     string   `json:"executor_model_scope"`
+	ExecutorInputFormats   []string `json:"executor_input_formats"`
+	ExecutorOutputFormats  []string `json:"executor_output_formats"`
 }
 
 func pluginRegistration() registration {
@@ -196,13 +209,24 @@ func pluginRegistration() registration {
 		Metadata: pluginapi.Metadata{
 			Name:             pluginIdentifier,
 			Version:          pluginVersion,
-			Author:           "uf-hy",
-			GitHubRepository: "https://github.com/uf-hy/cpa-plugin-codexcomp",
+			Author:           pluginAuthor,
+			GitHubRepository: pluginRepository,
 			ConfigFields: []pluginapi.ConfigField{
+				{
+					Name:        "model_mode",
+					Type:        pluginapi.ConfigFieldTypeEnum,
+					EnumValues:  []string{modelModeAuto, modelModeManual},
+					Description: "Default auto: match incoming GPT-5+ text-family names without a model list; CPA retains availability and routing. This is a naming heuristic, not catalog synchronization. Existing models-only configurations keep manual exact matching. Explicit auto ignores a retained models list; manual uses only that list.",
+				},
 				{
 					Name:        "models",
 					Type:        pluginapi.ConfigFieldTypeArray,
-					Description: "Exact model IDs to intercept. Defaults: gpt-5.5, gpt-5.6-luna, gpt-5.6-terra. Replaces defaults, not appends; to add a model, include the defaults plus your additions.",
+					Description: "Optional exact IDs for manual mode, replacing rather than extending the list. With no model_mode, an existing models field retains legacy manual semantics (including the old empty-list fallback). Explicit manual with an empty list intercepts nothing. Omit this field for a fresh zero-configuration auto setup.",
+				},
+				{
+					Name:        "exclude_models",
+					Type:        pluginapi.ConfigFieldTypeArray,
+					Description: "Optional exclusions, taking priority in both modes. A base ID also excludes its provider prefixes and effort suffixes; a qualified ID excludes only that qualified route. No wildcard or arbitrary alias resolution.",
 				},
 				{
 					Name:        "marker_text",
@@ -232,11 +256,17 @@ func pluginRegistration() registration {
 			},
 		},
 		Capabilities: registrationCapability{
-			ModelRouter:           true,
-			Executor:              true,
-			ExecutorModelScope:    string(pluginapi.ExecutorModelScopeBoth),
-			ExecutorInputFormats:  []string{"codex"},
-			ExecutorOutputFormats: []string{"codex"},
+			StreamChunkInterceptor: true,
+			RequestLifecycle:       true,
+			ModelRouter:            true,
+			RequestInterceptor:     true,
+			Executor:               true,
+			ExecutorModelScope:     string(pluginapi.ExecutorModelScopeBoth),
+			ExecutorInputFormats:   []string{"codex"},
+			// Responses events are already in the requested wire format. CPA 8.0.9+
+			// can otherwise discard a legitimate identity translation as fallback.
+			// Retain codex for native translation to Chat Completions and Messages.
+			ExecutorOutputFormats: []string{"codex", "openai-response"},
 		},
 	}
 }
@@ -252,6 +282,14 @@ func handleMethod(method string, request []byte) ([]byte, error) {
 		return okEnvelope(pluginRegistration())
 	case pluginabi.MethodModelRoute:
 		return routeModel(request)
+	case pluginabi.MethodRequestInterceptBefore:
+		return okEnvelope(pluginapi.RequestInterceptResponse{})
+	case pluginabi.MethodRequestInterceptAfter:
+		return interceptWSParentAfter(request)
+	case pluginabi.MethodResponseInterceptStreamChunk:
+		return interceptNativeWSChunk(request)
+	case pluginabi.MethodRequestComplete:
+		return completeNativeWSRequest(request)
 	case pluginabi.MethodExecutorIdentifier:
 		return okEnvelope(map[string]string{"identifier": pluginIdentifier})
 	case pluginabi.MethodExecutorExecute:
@@ -328,6 +366,6 @@ func cloneHeader(headers http.Header) http.Header {
 func pluginLog(level, message string) {
 	_, _ = callHost(pluginabi.MethodHostLog, map[string]any{
 		"level":   level,
-		"message": "[codexcomp] " + message,
+		"message": "[codexreflow] " + message,
 	})
 }

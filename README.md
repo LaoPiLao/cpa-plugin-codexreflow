@@ -1,275 +1,180 @@
-# CPA 插件：CodexComp
+# CodexReflow · 续流
 
-[![Go 1.26+](https://img.shields.io/badge/Go-1.26%2B-00ADD8?logo=go)](https://go.dev/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+CPA 的 Codex 推理续接与流式兼容插件。基于
+[CodexComp v0.1.7](https://github.com/uf-hy/cpa-plugin-codexcomp/tree/v0.1.7)
+的独立维护分支，**不是 OpenAI 或 CLIProxyAPI 官方插件**。
 
-[简体中文](README.md) | [English](README_EN.md)
+[English](README_EN.md) · [兼容性与验收](docs/COMPATIBILITY.md) · [维护流程](CONTRIBUTING.md)
 
-[CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI) 插件，检测并修复可配置模型（默认 `gpt-5.5`、`gpt-5.6-luna` 和 `gpt-5.6-terra`）流式请求中的推理截断，以减少偶发的模型降智，支持 OpenAI Responses API、OpenAI Chat Completions API 和 Anthropic Messages API 三种客户端协议
+## 当前状态
 
-gpt-5.5 在 agent 场景下推理 token 会精确停在 518n−2（516、1034、1552……），这个截断会导致意料之外的降智问题。使用插件检测到该种截断后，通过 encrypted_content 重放自动续写推理，并将多轮折叠为单个响应，对下游客户端完全透明。
+- 当前本地开发版：`0.1.0-dev.5`，插件 ID：`codexreflow`；2026-10-07 23:38（UTC+8）经授权安装到 CPA `8.0.16`，尚无公开二进制 Release。增加按次逐轮脱敏诊断、只读汇总工具和独立的本地候选打包器，不修改续写策略。见 [诊断说明](docs/DIAGNOSTICS.md)、[dev.5 验证记录](docs/VALIDATION-2026-10-07-dev5.md)、[安装记录](docs/DEPLOYMENT-2026-10-07-dev5.md)。
+- 10 月 8 日截至 01:42:48（UTC+8）的只读核对：两个已有会话共 22 条已完成上游记录均为 HTTP 200，16 次处理的客户端合并用量吻合，6 次实际续接（其中 4 次原生 WS 增量路径），两个会话均有完整回答和工具往返记录。全部上游样本使用 WS；不覆盖仍在运行的请求、真实 HTTP/SSE 的全面验收或答案质量。见 [dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md)。
+- SDK 锁定为 CLIProxyAPI `v8.0.13`，无相邻目录 `replace`，不追随宿主最新版本自动构建。
+- SSE / 裸 JSON 共用事件解码和折叠逻辑；对 Responses 客户端声明直接输出格式，避开 CPA 8.0.9+ 的 identity-frame 误过滤路径。
+- 相同 dev.5 DLL 分别通过真实 CPA `8.0.13` / `8.0.15` / `8.0.16` 进程 + 本地合成上游的 HTTP/WS 隔离回归；每种宿主 50 次案例执行，共 150 次，另通过 31 项原生 ABI 和 19 项 Python 测试。WS 双端握手，未回退 HTTP；不是 150 种独立场景，远程结果请查看 [Actions](https://github.com/LaoPiLao/cpa-plugin-codexreflow/actions)。
+- 新配置默认自动匹配 GPT-5 及以上的标准文本系列名称，无须维护模型白名单；旧显式白名单仍保持精确匹配。
+- 在 dev.3 的响应 ID 衔接基础上，新增**完整上下文已知时**的原生 WS 增量续写。每种宿主各通过 14 项新增增量、13 项衔接和 23 项自动选择回归；另重现 dev.3 不追加增量思考的行为作为对照。
+- **隔离回归和有限真实样本都不是全面生产认证。** 取消、复杂上下文、重连和质量仍未全面验收；后台会话的 `interrupted` 记录不能单独归因为插件故障。
+- 公开源码仓库：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)。尚未发布正式版本或收录官方商店。已有本地 DLL 使用明确的 `local://codexreflow` 来源标记，不代表可安装的 GitHub Release；正式构件必须采用真实仓库来源并重新验收。
+- 10 月 8 日建仓时仅调整 Go 模块归属及仓库资料，SDK 和运行策略未变；当前源码重新通过 unit/race/vet/fuzz、31 项原生 ABI 和 19 项 Python 测试。已安装 DLL 与旧候选 ZIP 均未改，历史报告不能移作新构件的哈希证据。
 
-## 快速安装（Agent）
+验证详情：[dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md) · [dev.5 隔离回归](docs/VALIDATION-2026-10-07-dev5.md)。历史记录：[dev.4 真实增量续写与 CPA 8.0.16](docs/VALIDATION-2026-10-07-live-dev4.md) · [WS 增量续写与授权部署](docs/VALIDATION-2026-10-05-dev4.md) · [WS 衔接与诊断](docs/VALIDATION-2026-10-05-dev3.md) · [默认自动匹配](docs/VALIDATION-2026-10-05-dev2.md) · [断流修补](docs/VALIDATION-2026-10-05-dev1.md) · [首轮历史记录](docs/VALIDATION-2026-10-05.md)。
 
-如果你使用 AI agent（自动化代理，如 Codex、Claude Code 等），把下面这段提示词发给它：
+## 功能与边界
 
-```
-请帮我安装 CPA 插件 codexcomp。安装说明在 https://github.com/uf-hy/cpa-plugin-codexcomp/blob/master/SETUP.md ，请先读取这个文档再执行安装。
-```
+保留上游的 `518n-2` 检测、`encrypted_content` 续写、输出缓冲和多轮用量合并。
+该数字模式只是续写启发式，**不能仅凭 516 判定降智，也不能保证续写提升答案质量**。
+续写会消耗真实 token，并增加延迟。
 
-人类手动安装请见 [安装章节](#安装)。
+改进：
 
-## 工作原理
+1. 同时解析 HTTP/SSE 的 `data:` 帧和 CPA WebSocket 回调的裸 JSON；支持分块、合并事件及字符串内的 `data:` / 花括号，并恢复 CPA 扫描后丢失的 SSE 控制行换行边界。
+2. Responses 输出不重复翻译；保留 `codex` 输出声明，供宿主翻译 Chat Completions / Messages。
+3. 不完整、畸形和过大事件明确失败，而不是静默等到 EOF；错误信息不包含响应原文。
+4. 独立插件 ID、日志前缀和会话缓存命名空间；兼容旧会话请求头。
+5. 默认自动匹配、可选手动白名单和优先排除名单；在插件配置元数据中提供 `auto` / `manual` 下拉选项。
+6. 续写维持稳定的客户端响应 ID；后继原生 WS 首次上游调用仅把已知父 ID 映射到追加轮的实际 ID，保留客户端增量和宿主路由。
+7. WS 增量响应通过响应流钩子复用折叠器；仅在同连接/模型/通道的完整上下文命中、满足截断启发式且具备加密状态时追加调用。隐藏续写重放完整上下文，而不是删除父 ID 后只发送当前增量。
 
-插件通过 CPA 的 C ABI 插件系统拦截配置列表中的模型（默认 `gpt-5.5`、`gpt-5.6-luna` 和 `gpt-5.6-terra`）流式请求，内部以 codex 格式与上游通信，每当上游完成后检查 reasoning_tokens 是否匹配 518n−2 模式。若匹配且存在 encrypted_content，则触发续写
+模型路由器仍只接管匹配模型、支持协议、无 `previous_response_id` 的流式请求，Responses 的
+`input` 必须为数组。携带父 ID 的首次生成仍由 CPA 原生处理；dev.4 在响应阶段增加有条件的续写。
+未知、过期或过大的上下文不会触发额外模型调用，也不会被拼成残缺重放；升级前已有的连接不保证命中。
+不同连接、模型或通道不能借用缓存，`generate:false` 不接管。
 
-续写轮重放原始 input 加上之前所有思考内容和一条提示消息使得模型从截断点继续而非重来
+**隐私变化：** 除 dev.3 的 ID 别名外，dev.4 在进程内存暂存最新完整输入/输出、请求设置及不透明加密推理，
+不写入插件日志或磁盘。上下文缓存最多 64 项、每项 16 MiB、合计 64 MiB，TTL 15 分钟，按访问/写入惰性清理；
+活动增量请求另有 64 项、请求及累计流字节合计 64 MiB 的预算，生命周期回调清理。
+这些限制按序列化字节计，不是 Go 堆/RSS 上限或安全内存擦除保证。详见 [dev.4 验证与边界](docs/VALIDATION-2026-10-05-dev4.md)。
+**不要同时启用 CodexComp 和 CodexReflow 来接管同一模型**，避免嵌套续写或路由递归。
 
-默认情况设定为最多 3 轮续写, 以通过可能的更多耗时来换取相对提升的思考长度和时间进而提升模型智力
+## 本地开发（Windows x64）
 
-### 异步流式与首字节延迟
-
-gpt-5.5 high reasoning effort 模式下，模型可能需要 25-30 秒才产生第一个 SSE 事件。很多客户端（包括 Codex CLI）会在 10 秒时超时。插件使用 CPA 的异步流式模式：响应头立即返回，由 goroutine 处理折叠逻辑。上游事件一到就转发给客户端，简单问题首字节实测低于 500ms，复杂推理也会在上游产出第一个事件后立即转发。
-
-## 接管范围
-
-插件只拦截**同时满足以下条件**的请求：
-
-- 模型位于 `models` 配置列表中（默认 `gpt-5.5`、`gpt-5.6-luna` 和 `gpt-5.6-terra`）
-- 客户端协议为 `openai-response`（Responses API）、`openai`（Chat Completions API）或 `claude`（Anthropic Messages API）
-- 流式请求（`stream: true`）
-- 不含 `previous_response_id`
-- `input` 为数组格式（仅 `openai-response` 协议要求；字符串格式的 `input` 会直接透传，不触发续写）
-
-插件内部统一以 codex 格式与上游通信，由 CPA 的适配层自动完成客户端协议与 codex 之间的双向翻译，对下游客户端完全透明。其他请求全部透传给 CPA 正常处理。
-
-## 与 codexcomp / CodexCont 的区别
-
-| | [CodexCont](https://github.com/neteroster/CodexCont) | [codexcomp](https://github.com/dzshzx/codexcomp) | 本插件 |
-|---|---|---|---|
-| **语言** | Python (Starlette/uvicorn) | Python (uv) | Go (C ABI 共享库) |
-| **部署** | 独立本地代理 (127.0.0.1:8787) | 独立本地代理 (127.0.0.1:8787) | CPA 插件（进程内加载） |
-| **集成** | 手动改 `openai_base_url` | 手动改 `openai_base_url` | CPA 自动路由，无需改配置 |
-| **传输** | HTTP/SSE | WebSocket + SSE 回退 | CPA 宿主模型流（`host.model.execute_stream`） |
-| **递归规避** | 不适用（独立进程） | 不适用（独立进程） | `host_callback_id` 跳过自身路由/拦截器 |
-| **并发** | 单进程 | 单进程 | CPA 管理，每请求一个 goroutine |
-| **配置** | `config.toml` | 零配置（uv tool） | 默认零配置，可选调试参数（C ABI 自注册） |
-| **折叠逻辑** | 最初的 `518n−2` 检测 + 续写 | 改进的折叠（传输无关） | codexcomp `fold.py` 的 Go 移植 |
-
-CodexCont 是最初的续写机制。codexcomp 将其改进为传输无关的折叠。本插件将折叠逻辑移植到 Go 并直接集成到 CPA 插件系统中，无需独立代理进程。
-
-## 安装
-
-### 方式一：CPA WebUI 安装（推荐）
-
-CodexComp 已收录进 [CLIProxyAPI 官方插件商店](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/24)：
-
-1. 打开 **配置面板 → 可视化编辑 → 完整 → 高级与实验 → 插件**
-2. 确保插件系统为开启
-3. 在插件商店页面搜索 CodexComp，点击安装
-4. 如果暂时看不到条目，刷新插件商店或升级 CPA；也可以把下面的地址添加为第三方插件源：
-
-```text
-https://raw.githubusercontent.com/uf-hy/cpa-plugin-codexcomp/master/registry.json
-```
-
-CPA 会自动下载对应系统和架构的动态库、校验 SHA256、热重载，通常无需再次重启。Enjoy it!
-
-### 方式二：手动安装
-
-从 [Releases](https://github.com/uf-hy/cpa-plugin-codexcomp/releases/latest) 下载对应平台的 zip 包，解压后放到 `plugins/` 目录：
-
-| CPA 运行系统 | 架构 | 资产名 | 动态库 |
-|---|---|---|---|
-| Linux | amd64 / arm64 | `codexcomp_<version>_linux_<arch>.zip` | `codexcomp.so` |
-| macOS | amd64 / arm64 | `codexcomp_<version>_darwin_<arch>.zip` | `codexcomp.dylib` |
-| Windows | amd64 / arm64 | `codexcomp_<version>_windows_<arch>.zip` | `codexcomp.dll` |
-| FreeBSD | amd64 | `codexcomp_<version>_freebsd_amd64.zip` | `codexcomp.so` |
-
-> FreeBSD arm64 的 CPA 官方成品是 `no-plugin` 构建，不支持动态库插件，因此没有对应插件资产。
-
-```bash
-# Linux、macOS 或 FreeBSD：确认系统和架构后下载对应 zip
-mkdir -p <CPA_DIR>/plugins
-unzip -o "codexcomp_<version>_<goos>_<arch>.zip" -d <CPA_DIR>/plugins/
-```
-
-Windows 原生部署提供 amd64 和 arm64 成品，可在 PowerShell 中解压：
+需要 Python 3.11+。下载并校验便携 Go / LLVM-MinGW；所有工具和缓存只放在 `.tools/`，不修改系统 PATH：
 
 ```powershell
-New-Item -ItemType Directory -Force -Path '<CPA_DIR>\plugins' | Out-Null
-Expand-Archive -LiteralPath 'codexcomp_<version>_windows_<arch>.zip' -DestinationPath '<CPA_DIR>\plugins' -Force
+python scripts/bootstrap_windows_tools.py
+. ./scripts/dev_env.ps1
+go test ./... -count=1
+go test ./... -race -count=1
+go vet ./...
+go test -run '^$' -fuzz '^FuzzDecoderChunkBoundaries$' -fuzztime=15s -parallel=2
+./scripts/build_windows.ps1
+python scripts/native_smoke.py build/codexreflow.dll --report build/native-smoke.json
 ```
 
-在 `config.yaml` 中启用插件：
+开发 DLL：`build/codexreflow.dll`。本项目没有自动安装、自动启用插件或修改 Codex 配置的脚本。
+原生 smoke test 用 **真实 DLL + 合成 CPA C ABI 宿主回调**；不使用账号、密钥或模型。
 
-```yaml
-plugins:
-  enabled: true
-  dir: plugins
-  configs:
-    codexcomp:
-      enabled: true
-      priority: 1
-```
-
-如果使用 Docker，在 `docker-compose.yml` 中挂载插件目录：
-
-```yaml
-volumes:
-  - ./plugins:/CLIProxyAPI/plugins
-```
-
-重启 CPA。
-
-更适合 AI agent（自动化代理）的完整步骤见 [SETUP.md](SETUP.md)。
-
-### 从源码编译
-
-`go.mod` 中有 `replace` 指令指向相邻目录的 CLIProxyAPI，需要先 clone 依赖仓库。完整的目标平台工具链与验证步骤以 [Release workflow](.github/workflows/release.yml) 为准：
-
-```bash
-git clone https://github.com/router-for-me/CLIProxyAPI.git ../CLIProxyAPI
-# Linux 或 FreeBSD
-go build -buildmode=c-shared -o codexcomp.so .
-
-# macOS
-go build -buildmode=c-shared -o codexcomp.dylib .
-```
-
-Windows 原生编译需要启用 CGO 并安装与目标架构匹配的 C 工具链：amd64 使用 MSYS2 UCRT64/GCC，arm64 使用 MSYS2 CLANGARM64/Clang。
+有本地 CPA 8.0.13 可执行文件时，可运行更高一级的隔离测试：
 
 ```powershell
-git clone 'https://github.com/router-for-me/CLIProxyAPI.git' '..\CLIProxyAPI'
-$env:CGO_ENABLED = '1'
-go build -buildmode=c-shared -o codexcomp.dll .
+python scripts/isolated_cpa_smoke.py <CPA可执行文件> build/codexreflow.dll --report build/isolated-cpa-smoke.json
+python scripts/isolated_cpa_smoke.py <CPA可执行文件> build/codexreflow.dll --auto-models --report build/isolated-auto-models.json
+python scripts/ws_incremental_smoke.py --cpa <CPA可执行文件> --dll build/codexreflow.dll --native-folds --report build/ws-incremental.json
+python scripts/ws_incremental_fold_smoke.py --cpa <CPA可执行文件> --dll build/codexreflow.dll --report build/ws-incremental-fold.json
 ```
 
-## 配置
+使用 CPA 8.0.15 / 8.0.16 时，各命令必须显式追加对应的 `--cpa-version 8.0.15` / `--cpa-version 8.0.16`；测试会核对宿主版本，不自动追随更新。
+它启动独立端口、空账号目录、合成 HTTP/WS 上游，仅在临时实例内启用插件，不读取或改写生产配置。
+覆盖正常回答、控制行、续写和工具事件；`--auto-models` 另验证无模型配置、旧名单迁移、排除规则、缺少加密状态及默认续写上限。
+严格 WS 集另覆盖续写后增量文本、合成工具回传、完整重放、重连和并发连接隔离；新增集验证原生增量
+516/1034 的隐藏续写、省略设置的继承、三轮预算、零预算/缺少加密状态、失败/不完整及追加零思考 token。
+不等同于实际工具执行、真实模型或 Desktop 验收。固定 CPA 配置重载会关闭上游执行会话，
+即使插件关闭也如此；这不是无缝热重载，客户端须以新连接及完整输入恢复。
 
-默认无需额外配置。插件通过 C ABI 自注册，自动路由。需要做 A/B 测试或排障时，可以打开下面这些参数。
+Linux/macOS 有 Go 1.26+ 和 C 编译器时可运行 `go test ./...`；当前只实际验证本地 Windows x64。
+
+## 默认使用：不需要手写模型列表
+
+全新安装只需在 CPA 的插件界面启用 CodexReflow；不填写 `models`，不必手写 YAML。
+这是启用后的默认行为，并不代表插件安装后会擅自自动启用。等价的最小配置如下：
 
 ```yaml
 plugins:
   configs:
-    codexcomp:
-      models:
-        - gpt-5.5
-        - gpt-5.6-luna
-        - gpt-5.6-terra
-      marker_text: "Continue thinking..."
-      max_continue: 3
-      max_tier_n: 6
-      debug_log: false
+    codexreflow:
+      enabled: false # 首次安装先保持关闭，确认验收和回滚方案后再启用
 ```
 
-`marker_text` 是检测到截断后插入的续写提示，默认值是 `Continue thinking...`。
+默认 `model_mode: auto`：匹配小写 `gpt-5` 及以上标准名称，例如 `gpt-5.6-sol`、
+`gpt-6-astra`、`gpt-6-sol`、`gpt-6-luna`；匹配时支持 CPA 路由前缀与末尾推理后缀，
+如 `lab/gpt-6-sol(max)`，但不改写请求 ID 或验证后缀能力。
+排除名称含 image / audio / realtime / transcribe / transcription / tts / video / embedding(s) / moderation 词段的系列。
+新标准名称不需要更新白名单，模型是否可用以及映射至哪个上游仍由 CPA 决定。
 
-`max_continue` 是最多续写轮数，默认 3；设为 0 可以临时禁用续写，只保留接管和元数据路径，方便对比。
+**这是请求名称启发式，不是读取或精确同步 CPA 模型目录，也不是自动发现模型能力。**
+非标准别名（如 `my-coder`）无法从名称推断，应切换手动模式；标准 GPT 名称的别名也不保证实际指向 GPT。
+目前固定 SDK 未提供插件可直接调用的模型目录接口，本实现不轮询管理 API、不读取密钥、不注册新模型。
 
-`max_tier_n` 是允许续写的最大截断层级，默认 6；设为 0 表示不限制上限。
+### 旧配置与可选调整
 
-`debug_log` 会通过 CPA 的 host log（宿主日志）输出配置和续写轮次信息，默认关闭，排障时再开。
+已有 `models` 配置且没有显式 `model_mode` 时，升级不会扩大原名单。
+要改为自动模式，在宿主支持该配置字段的界面选择 `model_mode = auto` 即可；保留的名单不会参与自动匹配。
+元数据及隔离 CPA 配置热重载已验证，ECPA 界面实际渲染仍需用户验收。
 
-`models` 是要拦截的模型标识符列表，默认接管 `gpt-5.5`、`gpt-5.6-luna` 和 `gpt-5.6-terra`。Luna 和 Terra 均已观测到 518n−2 截断现象，因此加入默认列表；Sol 暂未观测到相同问题，不默认接管。配置该列表会完全覆盖默认值（非追加），如需追加模型请同时写出默认模型：
+| 配置 | 实际模型选择 |
+|---|---|
+| 不填写 `model_mode` 和 `models` | 默认自动模式 |
+| 旧的 `models: [具体 ID]` | 手动模式，原始请求 ID 精确匹配，不自动扩展前缀或后缀 |
+| 旧的 `models: []` / `null`，无模式 | 保留历史三个 ID：`gpt-5.5`、`gpt-5.6-luna`、`gpt-5.6-terra` |
+| 显式 `model_mode: auto` | 自动规则，忽略保留的 `models` |
+| 显式 `model_mode: manual` | 只使用 `models`；未填或空名单不接管任何模型 |
+
+高级配置为可选项，不是首次使用要求：
 
 ```yaml
-plugins:
-  configs:
-    codexcomp:
-      models:
-        - gpt-5.5
-        - gpt-5.6-luna
-        - gpt-5.6-terra
-        - gpt-5.6-sol
+model_mode: auto
+exclude_models: [gpt-6-luna] # 两种模式都优先排除；此项也排除该 ID 的前缀/后缀形式
+max_continue: 3             # 默认最多追加三轮，总计最多四轮，可能增加费用与延迟
+max_tier_n: 6
+marker_text: "Continue thinking..."
+debug_log: false
 ```
 
-> **关于 Terra 的已知限制：** Terra 除标准 516 截断外，偶发其他非 518n−2 序列的推理截断（如 342、428、477 等 token 数）。这类截断无规律、不集中，且部分属模型自身在简单问题上低思考的正常行为。插件暂不对非标准截断做特殊处理，以避免对正常低思考请求一视同仁地续写、白白浪费时间和 token。如遇到持续复现可反馈。
+需要手动指定别名时使用 `model_mode: manual` 和 `models: [my-coder]`；名单替换而非追加。
+`exclude_models` 不支持通配符或任意别名解析；含前缀的排除项只影响该前缀路由。
+`max_continue: 0` 可禁止额外续写；自动命中并不自动续写，仍须符合截断启发式且具备加密推理状态。
+实验性的 `min_reasoning_tokens` 默认关闭，不建议为了增加数字而开启。
 
-**实验功能，不建议使用：实际测试中效果不理想，续写轮经常只增加很少甚至 0 个推理 token。** `min_reasoning_tokens` 是可选的每模型最小推理 token 阈值配置，默认不启用、没有默认阈值。配置后会作用于该模型的所有被接管请求，不区分请求中的 reasoning effort（推理强度）；所有已折叠轮次的推理 token 总数低于配置值时，插件会尝试触发续写。键为精确模型标识符（如 `gpt-5.6-luna`），值为非负整数阈值。例如：
+稳定会话头按优先级读取：`X-CPA-Session-Id`、`X-CodexReflow-Session-Id`、旧的
+`X-CodexComp-Session-Id`、`X-Claude-Code-Session-Id`。
 
-```yaml
-plugins:
-  configs:
-    codexcomp:
-      min_reasoning_tokens:
-        gpt-5.6-luna: 1200
-```
+## 用量与诊断
 
-这会使 `gpt-5.6-luna` 在总推理 token 少于 1200 时尝试续写，直到达到阈值、达到 `max_continue` 限制，或上游不再返回 `encrypted_content`。它不能保证最终达到阈值；此触发条件与原有的 `518n-2` 截断触发条件是或（OR）关系。
+Responses 终止事件中的 `metadata.proxy_rounds`、`metadata.proxy_billed_usage` 和
+`metadata.proxy_stopped_reason` 保留上游语义。CPA 可能分别记录每个上游轮次；
+出现多个 516 行并不等于插件未执行。应核对同一请求的轮次、最终文本、工具调用和真实费用。
+其他客户端协议的 metadata 可见性取决于宿主翻译，不作保证。
 
-### 直连 CPA 的稳定缓存
+dev.3 起在终止事件添加 `metadata.proxy_reflow`，并在默认 INFO 日志写入一次 `fold_finished`：
 
-如果客户端直接调用 CPA 的 OpenAI 兼容接口（`/v1/chat/completions` 或 `/v1/responses`），建议每个会话都带上稳定的 `X-CPA-Session-Id` 请求头：
+- `run_id`：每次折叠独立生成，不复用宿主请求/连接编号，也不冒充用量执行 ID。
+- `rounds_started` / `rounds_completed`：尝试开启轮数 / 已收到终止事件的轮数；后者不保证该轮成功，须结合 `result` 和 `stop_reason`。
+- `continuations_started` / `continuations_completed`：扣除首轮后的对应计数，可判断是否追加调用及其终止情况，不是计费结算或质量评分。
+- `stop_reason` / `ws_context_bridge`：停止原因 / 父 ID 衔接状态。
+- dev.4 原生增量路径另有 `path: ws_incremental`；日志另有 `result` 和 `emission`。`host_accepted` 仅指宿主接受输出；`interceptor_returned` 只指响应钩子返回字节，二者均非客户端送达确认。
 
-```http
-X-CPA-Session-Id: your-stable-session-id
-```
+父 ID 改写还会记录 `ws_parent_remapped`，携带对应折叠的 `run_id`。
+dev.5 另记录同一 `run_id` 的 `fold_started` 和每轮 `round_finished`，支持直接查看各轮 token 序列；
+`usage_join: unavailable` 明示尚不能精确连接 ECPA 用量行。可用 `scripts/summarize_diagnostics.py` 只读生成脱敏报告。
+新增诊断不含请求、提示词、回答、凭证、原生响应 ID 或加密内容，无须开启 `debug_log`。
+没有为所有原生绕过请求生成接管日志；日志缺失本身不能证明失败。
+**dev.4 扩展了完整上下文已知的 WS 增量续写，但不会抹去原始 516 记录。** 上下文未命中、预算为零、
+缺少加密状态，或追加轮没有新增思考 token 时，最终仍可能是 516；不能仅据这个数字判断是否生效。
 
-这个值用于生成上游 `prompt_cache_key`，让同一会话里的多轮请求稳定命中提示缓存。插件也兼容 `X-CodexComp-Session-Id` 和旧的 `X-Claude-Code-Session-Id`，但新接入建议使用 `X-CPA-Session-Id`。
+## 发布与商店
 
-如果想尝试更强的续写提示，可以参考 [openai/codex#30364 的相关讨论](https://github.com/openai/codex/issues/30364#issuecomment-4828984707)，把 `marker_text` 换成 `Spend time on thinking; you do not need to use the commentary channel to report progress to me.`。它更明确地要求模型把时间花在 thinking（思考）上，不要把 commentary channel（进度汇报通道）用于报告进度。不同客户端和任务里的效果可能不同，建议按自己的场景测试后再启用。
+仓库归属、Go 模块路径和商店草稿已使用本项目的真实 URL。本次授权只覆盖公开源码建仓及代码推送，
+不包含二进制 Release 或商店提交；正式构件仍需另行授权、重新验证并打包 ZIP / SHA256。
+见 [发布清单](docs/RELEASING.md)、[首发说明草稿](docs/RELEASE-NOTES-0.1.0-DRAFT.md) 和 [商店提交草稿](store/SUBMISSION-DRAFT.md)。
+CI 只测试和上传开发构件，不自动创建 GitHub Release、发 PR 或上架。
 
-## Metadata 注入
+## 来源与许可证
 
-最终 `response.completed` 事件包含：
+MIT。保留 uf-hy 的版权及 CodexCont / codexcomp 的第三方声明。
+新项目不冒充上游，未经重新验证不复用上游的效果、平台或兼容性宣传。
+历史文档存放在 `docs/upstream/`，只作来源档案，不是当前安装说明。
 
-- `metadata.proxy_rounds` — 每轮信息（轮次号、推理 token 数、截断层级 `n`；触发续写的轮次会额外包含 `continue_reason`，例如 `truncation` 或 `low_reasoning_tokens`）
-- `metadata.proxy_billed_usage` — 所有轮次的合计用量
-- `metadata.proxy_stopped_reason` — 非自然停止时非空（`no_encrypted_content`、`max_continue`、`tier_out_of_window`）
-
-> **注意**：以上 metadata 字段仅在 `openai-response`（Responses API）协议下保证可见。对于 `openai`（Chat Completions API）和 `claude`（Anthropic Messages API）协议，CPA 的协议翻译层不会传递 `response.completed` 中的 metadata，因此客户端无法获取 `proxy_rounds` 等字段。续写功能本身在所有协议下均正常工作，只是诊断信息仅在 Responses API 中可观测。
-
-## 基准测试
-
-使用 [codex-candy-eval](https://github.com/haowang02/codex-candy-eval) 的糖果问题——一个触发 gpt-5.5 截断的推理深度测试。正确答案为 21。
-
-仓库内置了多协议测试脚本 `scripts/candy_eval.py`，支持 `openai-response`、`openai-chat`、`anthropic` 三种客户端协议，可并发测试：
-
-**命令**：
-
-```bash
-python3 scripts/candy_eval.py \
-  --url http://your-cpa:port --key YOUR_KEY \
-  --protocol openai-response --rounds 5 -r high
-```
-
-### 无插件（baseline）
-
-| 运行 | 推理 Token | 答案 | 正确 |
-|------|-----------|------|------|
-| 1    | 516       | 29   | ✗    |
-| 2    | 516       | 29   | ✗    |
-| 3    | 1552      | 21   | ✓    |
-| 4    | 516       | 29   | ✗    |
-| 5    | 3069      | 21   | ✓    |
-
-**准确率：2/5 (40%)** — 5 个响应中有 3 个在 516 token 处截断（n=1），导致答错。
-
-### 有插件
-
-| 运行 | 推理 Token | 答案 | 正确 |
-|------|-----------|------|------|
-| 1    | 3641      | 21   | ✓    |
-| 2    | 2059      | 21   | ✓    |
-| 3    | 3273      | 21   | ✓    |
-| 4    | 4555      | 21   | ✓    |
-| 5    | 3100      | 21   | ✓    |
-
-**准确率：5/5 (100%)** — 所有截断均被检测并续写，答案全部正确。
-
-## 免责声明
-
-本插件依赖非契约的模型行为（`518n−2` 截断模式和 `encrypted_content` 字段）。如果 OpenAI 改变截断模式或移除 `encrypted_content`，插件将不再触发，变为透明透传。续写轮消耗真实 token，总量记录在 `metadata.proxy_billed_usage` 中。
-
-## 致谢
-
-- **[CodexCont](https://github.com/neteroster/CodexCont)**（MIT）— 最初的续写机制，识别了 `518n−2` 截断模式并开创了 `encrypted_content` 重放方案
-- **[codexcomp](https://github.com/dzshzx/codexcomp)**（MIT）— 改进的传输无关折叠算法；本插件直接移植自其 `fold.py`
-- **[codex-candy-eval](https://github.com/haowang02/codex-candy-eval)** — 本 README 使用的推理深度基准测试
-- **[CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI)** — 插件宿主框架，使进程内拦截成为可能
-- **[LINUX DO](https://linux.do)** 社区 — gpt-5.5 “516” 推理截断/降智问题的主要讨论、定位与验证现场；感谢社区成员提供复现样例、部署反馈和测试验证
-
-## 许可证
-
-MIT。本插件包含来自 [CodexCont](https://github.com/neteroster/CodexCont) 和 [codexcomp](https://github.com/dzshzx/codexcomp) 的派生代码，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+详细信息见 [LICENSE](LICENSE)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 和
+[THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt)。

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/router-for-me/CLIProxyAPI/v7/sdk/pluginabi"
-	"github.com/router-for-me/CLIProxyAPI/v7/sdk/pluginapi"
+	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginabi"
+	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginapi"
 )
 
 type rpcModelRouteRequest struct {
@@ -36,9 +36,10 @@ type hostModelStreamReadResponse struct {
 }
 
 const (
-	cpaSessionHeader        = "X-CPA-Session-Id"
-	codexCompSessionHeader  = "X-CodexComp-Session-Id"
-	claudeCodeSessionHeader = "X-Claude-Code-Session-Id"
+	cpaSessionHeader         = "X-CPA-Session-Id"
+	codexReflowSessionHeader = "X-CodexReflow-Session-Id"
+	codexCompSessionHeader   = "X-CodexComp-Session-Id" // legacy compatibility
+	claudeCodeSessionHeader  = "X-Claude-Code-Session-Id"
 )
 
 const (
@@ -49,6 +50,7 @@ const (
 
 var sessionHeaders = []string{
 	cpaSessionHeader,
+	codexReflowSessionHeader,
 	codexCompSessionHeader,
 	claudeCodeSessionHeader,
 }
@@ -90,7 +92,7 @@ func extractSessionID(req rpcExecutorRequest) string {
 }
 
 func stablePromptCacheKey(model, sessionID string) string {
-	name := strings.Join([]string{"codexcomp", "prompt-cache", model, "session:" + sessionID}, ":")
+	name := strings.Join([]string{pluginIdentifier, "prompt-cache", model, "session:" + sessionID}, ":")
 	h := sha1.Sum([]byte(name))
 	return fmt.Sprintf("%x", h)
 }
@@ -125,13 +127,9 @@ func closeStream(streamID, errMsg string) {
 }
 
 func modelInAllowlist(model string) bool {
-	cfg := currentFoldConfig()
-	for _, m := range cfg.Models {
-		if m == model {
-			return true
-		}
-	}
-	return false
+	// Retain the helper name for inherited tests; it now implements both the
+	// zero-configuration auto selector and the backward-compatible whitelist.
+	return currentFoldConfig().matchesModel(model)
 }
 
 func routeModel(raw []byte) ([]byte, error) {
@@ -175,7 +173,7 @@ func routeModel(raw []byte) ([]byte, error) {
 	return okEnvelope(pluginapi.ModelRouteResponse{
 		Handled:    true,
 		TargetKind: pluginapi.ModelRouteTargetSelf,
-		Reason:     "codexcomp_gpt55_truncation_fold",
+		Reason:     "codexreflow_reasoning_fold",
 	})
 }
 
@@ -258,12 +256,14 @@ func executeStream(raw []byte) ([]byte, error) {
 	}
 
 	fs := newFoldState(baseBody, origInput, req, req.HostCallbackID)
+	logReflowEvent(fs.diagnosticEvent("fold_started"))
 	firstRoundCh, firstRound := probeRoundStart(fs.startRound, startupProbeWindow)
 	if firstRound != nil && firstRound.err != nil {
 		status := http.StatusBadGateway
 		if upstreamErr, ok := firstRound.err.(*upstreamError); ok {
 			status = upstreamErr.status
 		}
+		fs.logResult("startup_error", "not_emitted", "upstream_error")
 		return errorEnvelopeWithStatus("executor_error", firstRound.err.Error(), status), nil
 	}
 	if firstRound != nil {
@@ -332,6 +332,8 @@ func closeStreamSafely(streamID, errMsg string) {
 }
 
 func runFold(fs *foldState, firstRound roundStartResult, streamID string) {
+	result, emission, stopReason := "aborted", "not_emitted", "aborted"
+	defer func() { fs.logResult(result, emission, stopReason) }()
 	pendingRound := &firstRound
 	for {
 		var terminal map[string]any
@@ -348,6 +350,7 @@ func runFold(fs *foldState, firstRound roundStartResult, streamID string) {
 		}
 
 		if roundErr != nil {
+			stopReason = "upstream_error"
 			var fev map[string]any
 			if _, isMid := roundErr.(*midStreamError); isMid {
 				fev = fs.incompleteEvent("upstream_error")
@@ -361,15 +364,27 @@ func runFold(fs *foldState, firstRound roundStartResult, streamID string) {
 				fev = fs.incompleteEvent("upstream_error")
 			}
 			fs.stamp(fev)
-			_ = emitChunk(streamID, sseEvent(fev))
+			fs.annotateEvent(fev, "upstream_error")
+			result, _ = fev["type"].(string)
+			if err := fs.emit(streamID, sseEvent(fev)); err == nil {
+				emission = "host_accepted"
+			} else {
+				emission = "emit_failed"
+			}
 			_ = emitDone(streamID)
 			return
 		}
 
 		if terminal == nil {
+			stopReason = "upstream_eof"
 			iev := fs.incompleteEvent("upstream_eof")
 			fs.stamp(iev)
-			_ = emitChunk(streamID, sseEvent(iev))
+			result = "response.incomplete"
+			if err := fs.emit(streamID, sseEvent(iev)); err == nil {
+				emission = "host_accepted"
+			} else {
+				emission = "emit_failed"
+			}
 			_ = emitDone(streamID)
 			return
 		}
@@ -384,14 +399,30 @@ func runFold(fs *foldState, firstRound roundStartResult, streamID string) {
 		}
 
 		if err := fs.flushCleanStop(streamID); err != nil {
+			stopReason = "downstream_emit_error"
+			emission = "emit_failed"
 			_ = emitDone(streamID)
 			return
 		}
+		// Publish the alias before accepting the terminal chunk: a fast client
+		// may send its next delta as soon as that chunk is visible. Revoke only
+		// this revision if emission fails, never a newer concurrent replacement.
+		lease, bridgeStatus := fs.registerWSAlias()
+		replayLease := fs.commitWSReplay()
+		fs.bridgeStatus = bridgeStatus
+		stopReason = fs.terminalStopReason()
 		ev := fs.terminalEvent()
 		fs.stamp(ev)
-		if err := emitChunk(streamID, sseEvent(ev)); err != nil {
+		if err := fs.emit(streamID, sseEvent(ev)); err != nil {
+			if bridgeStatus == "response_alias" {
+				foldedWSAliases.revoke(lease)
+			}
+			foldedWSReplays.revoke(replayLease)
+			emission = "emit_failed"
 			return
 		}
+		result, _ = ev["type"].(string)
+		emission = "host_accepted"
 		_ = emitDone(streamID)
 		return
 	}
@@ -418,6 +449,11 @@ func sseEvent(ev map[string]any) []byte {
 }
 
 type foldState struct {
+	runID          string
+	bridgeStatus   string
+	nativeWS       bool
+	emitter        func([]byte) error
+	beforeChunk    func([]byte) error
 	baseBody       map[string]any
 	origInput      []any
 	req            rpcExecutorRequest
@@ -440,8 +476,15 @@ type foldState struct {
 	terminal       map[string]any
 	usage          map[string]any
 
-	sseBuffer []byte
-	config    foldConfig
+	decoder eventDecoder
+	config  foldConfig
+}
+
+func (fs *foldState) emit(streamID string, payload []byte) error {
+	if fs.emitter != nil {
+		return fs.emitter(payload)
+	}
+	return emitChunk(streamID, payload)
 }
 
 type bufferedEntry struct {
@@ -452,6 +495,7 @@ type bufferedEntry struct {
 
 func newFoldState(baseBody map[string]any, origInput []any, req rpcExecutorRequest, hostCallbackID string) *foldState {
 	return &foldState{
+		runID:          newReflowRunID(),
 		baseBody:       baseBody,
 		origInput:      origInput,
 		req:            req,
@@ -479,7 +523,7 @@ func (fs *foldState) startRound() (hostModelStreamResponse, error) {
 	fs.buffered = nil
 	fs.terminal = nil
 	fs.usage = nil
-	fs.sseBuffer = nil
+	fs.decoder = eventDecoder{}
 
 	var bodyBytes []byte
 	var err error
@@ -551,56 +595,32 @@ func (fs *foldState) consumeRound(streamResp hostModelStreamResponse, streamID s
 			return nil, nil, streamResp.Headers, &midStreamError{msg: readResp.Error}
 		}
 		if readResp.Done {
+			if err := fs.decoder.finish(); err != nil {
+				return nil, nil, streamResp.Headers, &midStreamError{msg: err.Error()}
+			}
 			return fs.terminal, fs.usage, streamResp.Headers, nil
 		}
 	}
 }
 
-const maxSSEBufferSize = 8 * 1024 * 1024
-
-// CPA's stream_read returns payload chunks without trailing newlines, so we
-// cannot rely on \n or \n\n to delimit SSE frames. We scan for "data:" prefixes
-// and balance JSON braces to find event boundaries instead.
+// The CPA host callback returns SSE data frames for HTTP, but raw JSON events
+// for downstream WebSocket requests. Decode both before using the same fold.
 func (fs *foldState) processAndEmit(payload []byte, streamID string) (map[string]any, error) {
-	fs.sseBuffer = append(fs.sseBuffer, payload...)
-	if len(fs.sseBuffer) > maxSSEBufferSize {
-		return nil, fmt.Errorf("sse buffer exceeded %d bytes", maxSSEBufferSize)
+	if fs.beforeChunk != nil {
+		if err := fs.beforeChunk(payload); err != nil {
+			return nil, err
+		}
 	}
-
+	if err := fs.decoder.feed(payload); err != nil {
+		return nil, err
+	}
 	for {
-		dataStart := findSubstring(fs.sseBuffer, []byte("data:"))
-		if dataStart < 0 {
-			break
+		ev, ready, err := fs.decoder.next()
+		if err != nil {
+			return nil, err
 		}
-		jsonStart := dataStart + 5
-		for jsonStart < len(fs.sseBuffer) && (fs.sseBuffer[jsonStart] == ' ' || fs.sseBuffer[jsonStart] == '\t') {
-			jsonStart++
-		}
-		if jsonStart >= len(fs.sseBuffer) {
-			break
-		}
-
-		if jsonStart+5 <= len(fs.sseBuffer) && string(fs.sseBuffer[jsonStart:jsonStart+5]) == "[DONE]" {
-			fs.sseBuffer = fs.sseBuffer[jsonStart+5:]
-			continue
-		}
-
-		if fs.sseBuffer[jsonStart] != '{' {
-			fs.sseBuffer = fs.sseBuffer[dataStart+5:]
-			continue
-		}
-
-		jsonEnd := findJSONEnd(fs.sseBuffer, jsonStart)
-		if jsonEnd < 0 {
-			break
-		}
-
-		dataBytes := fs.sseBuffer[jsonStart : jsonEnd+1]
-		fs.sseBuffer = fs.sseBuffer[jsonEnd+1:]
-
-		var ev map[string]any
-		if err := json.Unmarshal(dataBytes, &ev); err != nil {
-			return nil, fmt.Errorf("parse SSE data: %w", err)
+		if !ready {
+			return nil, nil
 		}
 
 		term, err := fs.processEvent(ev, streamID)
@@ -611,8 +631,6 @@ func (fs *foldState) processAndEmit(payload []byte, streamID string) (map[string
 			return term, nil
 		}
 	}
-
-	return nil, nil
 }
 
 func findSubstring(data, sub []byte) int {
@@ -669,6 +687,23 @@ func findJSONEnd(data []byte, start int) int {
 
 func (fs *foldState) processEvent(ev map[string]any, streamID string) (map[string]any, error) {
 	etype, _ := ev["type"].(string)
+	if etype == "response.done" {
+		// CPA currently normalizes this upstream alias, but accepting it here
+		// also keeps host callbacks and standalone event fixtures compatible.
+		etype = "response.completed"
+		if response, ok := ev["response"].(map[string]any); ok {
+			switch response["status"] {
+			case "failed":
+				etype = "response.failed"
+			case "incomplete":
+				etype = "response.incomplete"
+			}
+		}
+		ev["type"] = etype
+	}
+	if etype == "error" {
+		return nil, fmt.Errorf("upstream returned an error event")
+	}
 
 	if etype == "response.created" || etype == "response.in_progress" {
 		if fs.roundNo == 1 {
@@ -678,7 +713,7 @@ func (fs *foldState) processEvent(ev map[string]any, streamID string) (map[strin
 				}
 			}
 			fs.stamp(ev)
-			if err := emitChunk(streamID, sseEvent(ev)); err != nil {
+			if err := fs.emit(streamID, sseEvent(ev)); err != nil {
 				return nil, err
 			}
 		}
@@ -712,7 +747,7 @@ func (fs *foldState) processEvent(ev map[string]any, streamID string) (map[strin
 			ev["output_index"] = fs.dsOI
 			fs.dsOI++
 			fs.stamp(ev)
-			if err := emitChunk(streamID, sseEvent(ev)); err != nil {
+			if err := fs.emit(streamID, sseEvent(ev)); err != nil {
 				return nil, err
 			}
 		} else {
@@ -734,7 +769,7 @@ func (fs *foldState) processEvent(ev map[string]any, streamID string) (map[strin
 			}
 		}
 		fs.stamp(ev)
-		if err := emitChunk(streamID, sseEvent(ev)); err != nil {
+		if err := fs.emit(streamID, sseEvent(ev)); err != nil {
 			return nil, err
 		}
 	} else if k == "buffered" {
@@ -751,7 +786,7 @@ func (fs *foldState) processEvent(ev map[string]any, streamID string) (map[strin
 		}
 	} else {
 		fs.stamp(ev)
-		if err := emitChunk(streamID, sseEvent(ev)); err != nil {
+		if err := fs.emit(streamID, sseEvent(ev)); err != nil {
 			return nil, err
 		}
 	}
@@ -779,6 +814,7 @@ func (fs *foldState) endRound(terminal map[string]any, usage map[string]any) {
 		"n":                n,
 	})
 	fs.debugf("round=%d completed reasoning_tokens=%s tier=%s", fs.roundNo, optionalIntString(rt), optionalIntString(n))
+	logReflowEvent(fs.roundTelemetry())
 }
 
 func (fs *foldState) minReasoningThreshold() int {
@@ -950,7 +986,7 @@ func (fs *foldState) flushCleanStop(streamID string) error {
 				ev["output_index"] = fs.dsOI
 			}
 			fs.stamp(ev)
-			if err := emitChunk(streamID, sseEvent(ev)); err != nil {
+			if err := fs.emit(streamID, sseEvent(ev)); err != nil {
 				return err
 			}
 		}
@@ -961,7 +997,7 @@ func (fs *foldState) flushCleanStop(streamID string) error {
 }
 
 func (fs *foldState) terminalEvent() map[string]any {
-	return terminalEvent(
+	return fs.annotateEvent(terminalEvent(
 		fs.terminal,
 		fs.baseResponse,
 		fs.finalOutput,
@@ -970,11 +1006,11 @@ func (fs *foldState) terminalEvent() map[string]any {
 		fs.summedUsage,
 		fs.stoppedReason(),
 		"",
-	)
+	), fs.terminalStopReason())
 }
 
 func (fs *foldState) incompleteEvent(reason string) map[string]any {
-	return terminalEvent(
+	return fs.annotateEvent(terminalEvent(
 		nil,
 		fs.baseResponse,
 		fs.finalOutput,
@@ -983,5 +1019,5 @@ func (fs *foldState) incompleteEvent(reason string) map[string]any {
 		fs.summedUsage,
 		reason,
 		reason,
-	)
+	), reason)
 }

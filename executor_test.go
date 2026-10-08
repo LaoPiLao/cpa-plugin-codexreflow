@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/router-for-me/CLIProxyAPI/v7/sdk/pluginapi"
+	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginapi"
 )
 
 func TestReasoningTokens(t *testing.T) {
@@ -656,8 +656,8 @@ func TestDecodeFoldConfigModelsDefault(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(cfg.Models, []string{"gpt-5.5", "gpt-5.6-luna", "gpt-5.6-terra"}) {
-		t.Errorf("default models should be [gpt-5.5 gpt-5.6-luna gpt-5.6-terra], got %v", cfg.Models)
+	if cfg.ModelMode != modelModeAuto || len(cfg.Models) != 0 {
+		t.Errorf("fresh defaults must select auto without a fixed list, got mode=%s models=%v", cfg.ModelMode, cfg.Models)
 	}
 	if cfg.MinReasoningTokens != nil {
 		t.Errorf("min_reasoning_tokens should be disabled by default, got %v", cfg.MinReasoningTokens)
@@ -706,7 +706,7 @@ func TestDecodeFoldConfigModelsConfigured(t *testing.T) {
 // TestDecodeFoldConfigModelsReplacesDefaults verifies that a user-specified
 // models list fully replaces the defaults rather than appending to them.
 // Configuring [gpt-5.5, gpt-5.6-luna] must NOT pull in gpt-5.6-terra even
-// though terra is in defaultModels().
+// though terra is in the legacy fallback list.
 func TestDecodeFoldConfigModelsReplacesDefaults(t *testing.T) {
 	cfg, err := decodeFoldConfig([]byte("models:\n  - gpt-5.5\n  - gpt-5.6-luna\n"))
 	if err != nil {
@@ -1457,7 +1457,7 @@ func TestSSEDoneHandled(t *testing.T) {
 
 func TestSSEBufferLimit(t *testing.T) {
 	fs := &foldState{}
-	fs.sseBuffer = make([]byte, maxSSEBufferSize-1)
+	fs.decoder.buffer = make([]byte, maxStreamBufferSize-1)
 	_, err := fs.processAndEmit([]byte("data: x"), "")
 	if err == nil {
 		t.Fatal("should error")
@@ -1622,7 +1622,7 @@ func TestRouteModelAccepts(t *testing.T) {
 	if resp.Data.TargetKind != pluginapi.ModelRouteTargetSelf {
 		t.Error("should target self")
 	}
-	if resp.Data.Reason != "codexcomp_gpt55_truncation_fold" {
+	if resp.Data.Reason != "codexreflow_reasoning_fold" {
 		t.Error("reason mismatch")
 	}
 }

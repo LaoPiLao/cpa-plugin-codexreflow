@@ -1,0 +1,71 @@
+# Changelog
+
+## 2026-10-08 source repository bootstrap (no binary release)
+
+- Establish the public source repository under `LaoPiLao/cpa-plugin-codexreflow` with separate authorization for creation and code push only. Preserve upstream history/attribution; do not publish inherited tags, a Release or a store PR.
+- Set the Go module and registry-entry draft to the confirmed repository. Keep the SDK pin and runtime policy unchanged; retain local-development source metadata for existing DLLs.
+- Revalidate the exact current Go source in a clean snapshot: unit/race/vet/fuzz, a newly built development-only source-check DLL with 31 native ABI cases, and 19 Python tests pass. Do not overwrite installed DLLs, the immutable candidate ZIP or historical reports; no extra model calls or production changes.
+
+## 0.1.0-dev.5 (unreleased; subsequently installed locally with authorization)
+
+- Add payload-free `fold_started` and per-round `round_finished` diagnostics linked to the existing random per-fold `run_id`. Whitelist five provider-reported token counters; preserve unknown as null and actual zero as zero. Keep continuation policy, routing, cache bounds and transport behavior unchanged.
+- Record lifecycle-only failure/cancellation evidence when native state exists but the host preempts its terminal stream hook; do not log free-form host errors or claim client delivery.
+- Explicitly mark `usage_join: unavailable`: CPA's usage execution UUID is not the independently generated interceptor lifecycle UUID or the parent request/WS trace. Do not infer exact billing joins from matching counters or timestamps.
+- Add a bounded offline diagnostic summary with missing/duplicate/conflicting evidence detection, plus privacy/concurrency/error tests and same-run assertions in native ABI and real isolated HTTP/WS harnesses.
+- Add a separate immutable local-candidate ZIP packager with version/source/platform and same-DLL report checks. Preserve the formal release guard; no production installation or remote publication is performed.
+- Pass Go unit/race/vet/fuzz, 31 native ABI cases, 19 Python tests, and 50 isolated scenario executions on each of CPA 8.0.13/8.0.15/8.0.16 with one DLL. SDK remains pinned; live-model acceptance of this candidate is pending.
+- Subsequently install the same validated DLL with separate authorization after both designated chats are idle. Verify rollback backups and change only the Reflow local version selector; preserve other plugins, configuration, enable states and transport. Read back stable effective registration on CPA 8.0.16 and rerun 31 native ABI cases against installed bytes. Initial read-only diagnostics contain one complete new run, not attributed to the designated chats. No additional model test request, explicit service restart or publication; see the separate deployment record.
+- On October 8, audit the two designated existing chats through 01:42:48 UTC+8 without production writes or extra model calls. Match 16 folds to client merged usage across 22 completed upstream WS rows, all HTTP 200; observe six continuations, four on the native incremental path, with tool round trips and final answers in both chats. Include a `516 -> 0` continuation and retain interruption/in-flight exclusions. This updates the earlier pending status with limited live evidence, not comprehensive acceptance or a quality claim; exact usage execution joins remain unavailable. See [the scoped audit](docs/VALIDATION-2026-10-08-live-dev5.md).
+
+## 2026-10-07 validation follow-up (no new DLL)
+
+- Read back the installed dev.4 on CPA 8.0.16 and verify its unchanged artifact hash. Do not modify production configuration, restart services, or generate extra model test requests.
+- Audit retained records for two user-selected existing chats: 14 live folds matched client merged usage, 12 through the new WS incremental path. Preserve scope limitations, client interruption evidence and the distinction between raw upstream token rows, delivery and answer quality.
+- Add explicit CPA 8.0.16 selection to the three isolated harnesses; rerun 14 incremental, 13 bridge and 23 auto-selection cases with the unchanged dev.4 DLL, all meeting expectations. Keep the SDK and Go implementation unchanged. See the October 7 validation record.
+
+## 0.1.0-dev.4 (unreleased; locally installed with authorization)
+
+- Keep incremental WS model routing and the first upstream delta native. Add a response-stream interceptor that reuses folding only with known complete socket/model/lane context; never remove a parent and replay only its delta.
+- Retain the latest canonical input/output, settings and opaque encrypted reasoning in bounded process memory. Inherit omitted settings while respecting explicit replacements; exclude tentative tools/text and continuation markers from committed history. No payload persistence or logging. This is a privacy change from the dev.3 ID-only bridge.
+- Bound replay entries, serialized bytes, TTL and active request/stream accounting. Unknown, expired or oversized history causes no additional model calls; stream resource exhaustion returns explicit incomplete output. Clean up on request lifecycle and shutdown.
+- Preserve stable visible response IDs and bridge the next parent to the final upstream ID. Add `path: ws_incremental` diagnostics and distinguish hook-returned bytes from host acceptance and client delivery.
+- Validate the identical Windows DLL against isolated CPA 8.0.13 and 8.0.15, with 14 incremental-fold, 13 bridge and 23 auto-selection cases per host; 29 native ABI cases plus Go unit/race/vet tests pass. Keep the SDK pinned to 8.0.13. The dev.3 control reproduces its native incremental no-fold behavior.
+- Test tool return followed by folding and folding followed by tool return, repeated truncation, omitted settings, limits, zero-added-reasoning, native failure/incomplete and concurrent sockets. Native failed events may be preempted by the host and close the socket; do not relabel that as success.
+- The build/repair phase made no production changes or billable model tests. Subsequently install the same validated DLL with explicit authorization after both user-designated chats were idle: verify config/DLL backups, change only Reflow's local version selector, preserve other settings/transports/enable states and read back stable registration on CPA 8.0.15. Re-run 29 native mock cases against the installed bytes. No new chat, extra model test, commit/push, release or store submission; new incremental-path real-model acceptance remains pending. See the dev.4 validation record.
+
+## 0.1.0-dev.3 (unreleased)
+
+- Bridge a folded response's client-visible ID to its final upstream ID on the next native WS turn, scoped by host-owned execution session, exact requested model and lane. Keep delta/tool input, credential pinning and transport policy unchanged; do not fold native incremental generations.
+- Accept the `codex` source format supplied by CPA's self-executor adapter when committing the alias. The first candidate mistakenly accepted only the pre-translation Responses format; real isolated CPA exposed and verified the fix.
+- Bound ID-only cache entries by capacity and TTL, clear on shutdown, and revoke the relevant revision if terminal emission fails. Unknown parents, different sockets/models/lanes and missing host scope remain untouched.
+- Add per-fold `proxy_reflow` terminal metadata and payload-free INFO logs with independent run IDs, attempted/terminal round counts, stop reason, bridge status and emission outcome. Distinguish upstream errors/EOF/failed/incomplete from normal completion.
+- Pass 29 native ABI scenarios, the existing 23 auto-selection and eight legacy cases, and 13 strict WS regressions, including subsequent text/tool turns, repeated continuation, replay, reconnect, prefixed/suffixed model IDs and concurrent sockets reusing a visible ID. Reproduce the older DLL's expected failures separately.
+- Verify that pinned CPA configuration reload shuts down upstream execution sessions even with this plugin disabled; recover through a new socket with full context rather than claiming seamless reload continuity.
+- The build/repair phase made no production changes or live model calls. Subsequently install the same tested DLL with explicit authorization, changing only the local Reflow version selector and preserving enable states, other settings and transport; read back registration and rerun 29 native mock cases on the installed bytes. No GitHub publication or store submission; real-model/Desktop acceptance and quality evaluation remain pending.
+
+## 0.1.0-dev.2 (unreleased)
+
+- Default new configurations to automatic GPT-5+ text-name matching without a fixed model list; CPA retains availability, alias resolution and routing. This is not exact catalog synchronization or capability detection.
+- Add an `auto` / `manual` configuration enum and optional priority exclusions; recognize route prefixes and final reasoning suffixes for matching only, while excluding named non-text families.
+- Preserve models-only legacy configurations, including their historical empty-list fallback. Explicit manual with no models intercepts nothing; explicit auto ignores a retained list.
+- Retain encrypted-state checks, request-shape guards, continuation budget and disabled experimental thresholds; reject invalid mode reloads without replacing the current configuration.
+- Pass 20 native C ABI scenarios, 23 zero-config/selection cases and eight independent legacy cases with real isolated CPA 8.0.13 + synthetic HTTP/WS upstream; verify the default three-additional-round limit and no continuation without encrypted state.
+- Build locally only; no production replacement, settings changes, real model calls, GitHub publication or store submission in this revision. Live 516 acceptance remains pending.
+
+## 0.1.0-dev.1 (unreleased)
+
+- Reproduce the dev build's HTTP `upstream_error` with a real CPA 8.0.13 process and a synthetic upstream; upstream replies complete while plugin output is lost.
+- Restore SSE control-line boundaries removed by CPA's Scanner callbacks; never insert boundaries into JSON content.
+- Add native Scanner-line regression cases and a loopback-only CPA integration harness with actual bidirectional WebSocket handshakes, no HTTP fallback, continuation, and tool-event checks.
+- Compile a new local development artifact, then install its versioned DLL with explicit user authorization and a rollback backup, keeping it disabled at installation. The user subsequently reported successful HTTP/WS communication; real 516 continuation and broader client acceptance remain pending.
+
+## 0.1.0-dev (unreleased)
+
+- Independent CodexComp v0.1.7 fork with plugin ID `codexreflow` and preserved attribution.
+- Pin CPA v8.0.13 SDK; remove sibling-checkout dependency.
+- Declare direct `openai-response` output alongside `codex`, avoiding CPA's identity-frame filter for Responses clients.
+- Decode SSE and raw JSON host events with bounded incremental scanning, fragmented frame support, and explicit parse/EOF errors.
+- Normalize `response.done` without treating failed/incomplete status as successful completion.
+- Add unit/fuzz coverage, Windows native DLL mock-host regression tests, and project-local build tools.
+- Keep production installation, live WS acceptance, remote creation, and release publishing separate. Initial installation was later authorized but failed client acceptance; see dev.1.
+- Provide explicit local-development source metadata required by CPA registration; release packaging still rejects non-GitHub sources.
