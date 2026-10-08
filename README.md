@@ -8,8 +8,8 @@ CPA 的 Codex 推理续接与流式兼容插件。基于
 
 ## 当前状态
 
-- `0.1.0` Windows amd64 发布包已完成本地构建与离线/隔离 HTTP/WS 回归、ZIP 字节验收，尚未上传 Release、安装到生产或收录商店；先前 dev.5 的真实使用样本不移作正式 DLL 在线验收。见 [正式包验收记录](docs/VALIDATION-2026-10-08-0.1.0.md)。
-- 当前本地开发版：`0.1.0-dev.5`，插件 ID：`codexreflow`；2026-10-07 23:38（UTC+8）经授权安装到 CPA `8.0.16`，尚无公开二进制 Release。增加按次逐轮脱敏诊断、只读汇总工具和独立的本地候选打包器，不修改续写策略。见 [诊断说明](docs/DIAGNOSTICS.md)、[dev.5 验证记录](docs/VALIDATION-2026-10-07-dev5.md)、[安装记录](docs/DEPLOYMENT-2026-10-07-dev5.md)。
+- [`v0.1.0` Windows amd64 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 已于 2026-10-08 公开发布；ZIP 和校验文件通过匿名下载及字节复核。正式包已通过离线/隔离 HTTP/WS 回归，未安装到生产或收录商店；先前 dev.5 的真实样本不移作正式 DLL 在线验收。见 [正式包验收](docs/VALIDATION-2026-10-08-0.1.0.md) 和 [公开发布记录](docs/RELEASE-2026-10-08-0.1.0.md)。
+- 此前已安装开发版：`0.1.0-dev.5`，插件 ID：`codexreflow`；2026-10-07 23:38（UTC+8）经授权安装到 CPA `8.0.16`，本次发布没有替换它。增加按次逐轮脱敏诊断、只读汇总工具和独立的本地候选打包器，不修改续写策略。见 [诊断说明](docs/DIAGNOSTICS.md)、[dev.5 验证记录](docs/VALIDATION-2026-10-07-dev5.md)、[安装记录](docs/DEPLOYMENT-2026-10-07-dev5.md)。
 - 10 月 8 日截至 01:42:48（UTC+8）的只读核对：两个已有会话共 22 条已完成上游记录均为 HTTP 200，16 次处理的客户端合并用量吻合，6 次实际续接（其中 4 次原生 WS 增量路径），两个会话均有完整回答和工具往返记录。全部上游样本使用 WS；不覆盖仍在运行的请求、真实 HTTP/SSE 的全面验收或答案质量。见 [dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md)。
 - SDK 锁定为 CLIProxyAPI `v8.0.13`，无相邻目录 `replace`，不追随宿主最新版本自动构建。
 - SSE / 裸 JSON 共用事件解码和折叠逻辑；对 Responses 客户端声明直接输出格式，避开 CPA 8.0.9+ 的 identity-frame 误过滤路径。
@@ -17,10 +17,12 @@ CPA 的 Codex 推理续接与流式兼容插件。基于
 - 新配置默认自动匹配 GPT-5 及以上的标准文本系列名称，无须维护模型白名单；旧显式白名单仍保持精确匹配。
 - 在 dev.3 的响应 ID 衔接基础上，新增**完整上下文已知时**的原生 WS 增量续写。每种宿主各通过 14 项新增增量、13 项衔接和 23 项自动选择回归；另重现 dev.3 不追加增量思考的行为作为对照。
 - **隔离回归和有限真实样本都不是全面生产认证。** 取消、复杂上下文、重连和质量仍未全面验收；后台会话的 `interrupted` 记录不能单独归因为插件故障。
-- 公开源码仓库：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)。尚未发布正式版本或收录官方商店。已有本地 DLL 使用明确的 `local://codexreflow` 来源标记，不代表可安装的 GitHub Release；正式构件必须采用真实仓库来源并重新验收。
+- 公开源码仓库：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)。正式发布标签固定到被测源码 `8758649`，验收/发布文档另更新于 `main`；尚未收录官方商店。旧开发 DLL 的 `local://codexreflow` 来源标记不代表正式发布；新正式构件已使用真实仓库来源并独立验收。
 - 10 月 8 日建仓时仅调整 Go 模块归属及仓库资料，SDK 和运行策略未变；当前源码重新通过 unit/race/vet/fuzz、31 项原生 ABI 和 19 项 Python 测试。已安装 DLL 与旧候选 ZIP 均未改，历史报告不能移作新构件的哈希证据。
 
-验证详情：[dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md) · [dev.5 隔离回归](docs/VALIDATION-2026-10-07-dev5.md)。历史记录：[dev.4 真实增量续写与 CPA 8.0.16](docs/VALIDATION-2026-10-07-live-dev4.md) · [WS 增量续写与授权部署](docs/VALIDATION-2026-10-05-dev4.md) · [WS 衔接与诊断](docs/VALIDATION-2026-10-05-dev3.md) · [默认自动匹配](docs/VALIDATION-2026-10-05-dev2.md) · [断流修补](docs/VALIDATION-2026-10-05-dev1.md) · [首轮历史记录](docs/VALIDATION-2026-10-05.md)。
+下载：[Windows amd64 ZIP](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.0/codexreflow_0.1.0_windows_amd64.zip) · [checksums.txt](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.0/checksums.txt)。下载后核对 SHA256，保留旧插件及配置以便回滚；本次发布不会自动安装或启用。
+
+验证详情：[正式包验收](docs/VALIDATION-2026-10-08-0.1.0.md) · [公开发布记录](docs/RELEASE-2026-10-08-0.1.0.md) · [dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md) · [dev.5 隔离回归](docs/VALIDATION-2026-10-07-dev5.md)。历史记录：[dev.4 真实增量续写与 CPA 8.0.16](docs/VALIDATION-2026-10-07-live-dev4.md) · [WS 增量续写与授权部署](docs/VALIDATION-2026-10-05-dev4.md) · [WS 衔接与诊断](docs/VALIDATION-2026-10-05-dev3.md) · [默认自动匹配](docs/VALIDATION-2026-10-05-dev2.md) · [断流修补](docs/VALIDATION-2026-10-05-dev1.md) · [首轮历史记录](docs/VALIDATION-2026-10-05.md)。
 
 ## 功能与边界
 
@@ -166,9 +168,9 @@ dev.5 另记录同一 `run_id` 的 `fold_started` 和每轮 `round_finished`，�
 
 ## 发布与商店
 
-仓库归属、Go 模块路径和商店草稿已使用本项目的真实 URL。本次授权只覆盖公开源码建仓及代码推送，
-不包含二进制 Release 或商店提交；随后已另获本地正式包构建/验收授权并完成，公开上传仍需确认。
-见 [发布清单](docs/RELEASING.md)、[首发说明草稿](docs/RELEASE-NOTES-0.1.0-DRAFT.md) 和 [商店提交草稿](store/SUBMISSION-DRAFT.md)。
+仓库归属、Go 模块路径和商店草稿已使用本项目的真实 URL。建仓、正式包验收和公开 Release 分别取得授权；
+`v0.1.0` 已发布并完成公开下载复核，商店 PR 尚未授权或提交，生产安装仍是独立步骤。
+见 [发布记录](docs/RELEASE-2026-10-08-0.1.0.md)、[发布清单](docs/RELEASING.md) 和 [商店提交草稿](store/SUBMISSION-DRAFT.md)。
 CI 只测试和上传开发构件，不自动创建 GitHub Release、发 PR 或上架。
 
 ## 来源与许可证

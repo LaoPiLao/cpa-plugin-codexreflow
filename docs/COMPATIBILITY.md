@@ -1,5 +1,15 @@
 # 兼容性与验收边界
 
+## 正式发布与证据分层
+
+[`v0.1.0`](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 已公开，仅 Windows amd64。
+正式 DLL 独立通过 31 项原生 ABI、19 项 Python 测试，以及 CPA 8.0.13/8.0.15/8.0.16
+各 50 次隔离 HTTP/WS 案例执行；公开 ZIP/校验文件与封存包匿名下载核对一致。
+它没有安装到生产或调用真实模型；下面 dev.5 的在线样本是历史证据，不转为正式 DLL 在线验收。
+见 [正式包验收](VALIDATION-2026-10-08-0.1.0.md)、[公开发布记录](RELEASE-2026-10-08-0.1.0.md)。
+
+## dev.5 历史证据
+
 dev.5 沿用以下传输/续写实现，增加脱敏逐轮诊断；同一 DLL 已在 CPA 8.0.13、8.0.15、8.0.16
 各完成 50 次隔离案例执行，另通过 31 项原生 ABI 和 19 项 Python 测试；
 远程结果请查看 [Actions](https://github.com/LaoPiLao/cpa-plugin-codexreflow/actions)，不能以本地通过代替远程结果。

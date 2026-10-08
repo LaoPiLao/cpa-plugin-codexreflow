@@ -1,5 +1,9 @@
 # 0.1.0 Windows 发布包本地验收 — 2026-10-08
 
+**阶段说明：** 本文记录发布前的本地验收及当时授权范围。之后另获授权推送文档、发布 `v0.1.0`，
+并完成公开资产匿名下载/字节复核，见 [独立发布记录](RELEASE-2026-10-08-0.1.0.md)。
+下文“没有上传/推送”等表述只指本地验收阶段；生产安装、真实模型调用和商店 PR 仍未执行。
+
 ## 结论与授权范围
 
 已从源码提交 `875864934cf82dbba90a7f85985f36ebd3a256d1` 重新构建 Windows amd64 的正式版本构件，
@@ -118,5 +122,5 @@ python scripts/ws_incremental_smoke.py --cpa <固定宿主> --cpa-version <明�
 python scripts/isolated_cpa_smoke.py <固定宿主> <新的DLL路径> --cpa-version <明确版本> --auto-models --report <新的自动选择报告>
 ```
 
-推荐下一步：审阅 [首发说明草稿](RELEASE-NOTES-0.1.0-DRAFT.md)，再单独授权发布 `v0.1.0` Release；
-生产安装和商店 PR 保持独立授权，不因本地打包通过而自动执行。
+推荐下一步：结合 [公开发布记录](RELEASE-2026-10-08-0.1.0.md) 审阅 [商店草稿](../store/SUBMISSION-DRAFT.md)，
+再单独授权注册表 PR；生产安装和新增模型调用保持独立授权。

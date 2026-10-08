@@ -1,15 +1,15 @@
-# CodexReflow v0.1.0 — 首发说明草稿
+# CodexReflow v0.1.0 — 首发说明草稿及发布补记
 
-**未发布，仍是说明草稿。** `0.1.0` Windows amd64 发布包已完成本地构建及离线/隔离验收，尚未安装或上传；
-先前安装版 `0.1.0-dev.5` 未替换。另获正式发布授权、上传并核验真实下载链接后，才能移除草稿提示。
-正式构件是新构建，不是开发 DLL 改名。
+本文件保留首发准备材料，**最终说明以 [公开 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 为准**。
+2026-10-08 另获授权后发布 Windows amd64 包，并完成匿名下载/字节复核；见 [发布记录](RELEASE-2026-10-08-0.1.0.md)。
+正式构件是新构建，不是开发 DLL 改名；未安装到生产，先前 dev.5 未替换，商店 PR 未提交。
 
 ## 项目简介
 
 CodexReflow · 续流是基于 CodexComp v0.1.7 的独立 CPA 插件分支，关注推理续接和流式事件兼容，
 不是 OpenAI 或 CLIProxyAPI 官方插件。保留 MIT 许可证及上游版权、第三方声明。
 
-## 计划首发内容
+## 首发内容
 
 - HTTP/SSE 和裸 JSON/WS 事件共用有界解码器，处理分块、合并事件和宿主去除的 SSE 控制行边界；
   Responses 直接输出，不重复翻译。
@@ -52,13 +52,13 @@ CodexReflow · 续流是基于 CodexComp v0.1.7 的独立 CPA 插件分支，关
 - 不同时启用 CodexComp 和 CodexReflow 接管同一模型。未验证的宿主版本、任意别名和非 Responses 客户端不作默认保证。
 - `host_accepted` / `interceptor_returned` 不是送达回执；有限真实样本不是长期可靠性或质量认证。
 
-## 正式发布前填写
+## 已发布信息（后续补记）
 
-- 仓库与维护者：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)，公开源码；正式二进制发布尚未授权。
-- 标签：目标 `v0.1.0`，尚未创建；本地 DLL 已注册 `0.1.0` 和真实仓库来源。
-- Windows 资产：`codexreflow_0.1.0_windows_amd64.zip`，根目录仅一份 `codexreflow.dll`，附许可证。
+- 仓库与维护者：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)，公开源码；正式 Release 已单独获授权。
+- 远程标签：`v0.1.0`，固定到被测源码 `875864934cf82dbba90a7f85985f36ebd3a256d1`；DLL 注册 `0.1.0` 和真实仓库来源。
+- Windows 资产：[codexreflow_0.1.0_windows_amd64.zip](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.0/codexreflow_0.1.0_windows_amd64.zip)，根目录仅一份 `codexreflow.dll`，附许可证。
 - ZIP SHA256：`63e0c62b414bea0dd98f1225f7507b78dcf8d0e7505e88147542a013ae8bd52d`，与本地 `checksums.txt` 一致。
 - DLL SHA256：`6f2bb2cec1adb8db02925170fb3c35b0176ea474687f7620bf993816ad8402a0`，对应上述全部 DLL 回归报告。
-- 安装入口：待正式 Release 上传并核验可下载后填写。当前只有源码仓库，没有二进制 Release 或商店提交。
+- 校验文件：[checksums.txt](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.0/checksums.txt)；两份资产已匿名下载并核验，不会自动安装，商店尚未收录。
 
-推荐下一步：按 [发布清单](RELEASING.md) 单独确认 Release 发布授权，上传已验收正式包并重新下载核验；商店 PR 不在该授权内。
+推荐下一步：按 [发布清单](RELEASING.md) 审阅商店提交草稿，再单独确认注册表 PR 授权；生产安装不在发布授权内。

@@ -10,3 +10,7 @@
 开发和修复使用工作分支；`origin` 指向 [LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)，
 `upstream` 保留 [uf-hy/cpa-plugin-codexcomp](https://github.com/uf-hy/cpa-plugin-codexcomp)。保留上游历史和本地
 `v0.1.7` 来源标签，不把继承的标签当作新插件的正式版本推送；代码推送不等于 Release 或商店提交授权。
+
+维护目录的本地 `v0.1.0` 同样继承自 CodexComp，保留不动；Reflow 的远程 `v0.1.0` 指向
+实际被测源码 `875864934cf82dbba90a7f85985f36ebd3a256d1`。不要整批推送/强制同步标签；
+使用明确源码 SHA 或新检出验证版本，详见 [发布记录](docs/RELEASE-2026-10-08-0.1.0.md)。

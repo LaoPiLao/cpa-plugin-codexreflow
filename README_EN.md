@@ -7,17 +7,25 @@ Not an official OpenAI or CLIProxyAPI plugin.
 
 [简体中文](README.md)
 
-## Development status
+## Release and validation status
 
-A Windows amd64 `0.1.0` release package has now passed local offline ABI and
-isolated HTTP/WS validation, including ZIP byte checks. It has not been uploaded
-as a Release, installed in production or submitted to the store. Historical
-dev.5 live samples are not live acceptance of this new DLL. See the
-[formal-package record](docs/VALIDATION-2026-10-08-0.1.0.md).
+A Windows amd64 [v0.1.0 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0)
+was published on October 8, 2026. Its ZIP and checksum file were downloaded
+anonymously and verified byte-for-byte against the sealed local package.
+The formal DLL passed local offline ABI and isolated HTTP/WS validation; it has
+not been installed in production or submitted to the store. Historical dev.5
+live samples are not live acceptance of this new DLL. See the
+[formal-package record](docs/VALIDATION-2026-10-08-0.1.0.md) and
+[publication record](docs/RELEASE-2026-10-08-0.1.0.md).
 
-Current local development build: `0.1.0-dev.5`, installed with authorization on
+Download: [Windows amd64 ZIP](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.0/codexreflow_0.1.0_windows_amd64.zip)
+and [checksums.txt](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.0/checksums.txt).
+Verify SHA256 before installing and preserve the previous plugin/configuration
+for rollback. Publication does not automatically install or enable the plugin.
+
+Previously installed local development build: `0.1.0-dev.5`, installed with authorization on
 CPA `8.0.16` at 23:38 UTC+8 on October 7, with effective registration read back;
-no public binary Release yet. See [deployment record](docs/DEPLOYMENT-2026-10-07-dev5.md).
+this publication does not replace it. See [deployment record](docs/DEPLOYMENT-2026-10-07-dev5.md).
 Adds per-run,
 per-round payload-free diagnostics, an offline summary tool and a separate local
 candidate packager. Continuation policy is unchanged. See [diagnostics](docs/DIAGNOSTICS.md)
@@ -63,7 +71,9 @@ See the [October 7 live audit and host regression](docs/VALIDATION-2026-10-07-li
 historical [dev.3 record](docs/VALIDATION-2026-10-05-dev3.md).
 The public source repository is
 [LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow).
-No binary Release or official store listing has been created. The October 8
+The release tag is fixed to the tested source commit `8758649`; validation and
+publication documents are updated separately on `main`. There is no official
+store listing. The October 8
 bootstrap changes only the Go module identity and repository materials, not the
 SDK or runtime policy. Current source passes local unit/race/vet/fuzz, 31 native
 ABI cases and 19 Python tests. Installed bytes and the previous candidate ZIP
@@ -187,10 +197,12 @@ The repository owner is `LaoPiLao`. Existing development metadata uses `local://
 as an explicit local source marker because CPA rejects empty source fields.
 Formal release packaging requires a real GitHub repository. CI cannot publish
 releases or submit store PRs.
-The source-repository creation and code push are authorized separately from
-binary Releases and store submission, neither of which is performed here.
-Publication materials are drafts only: [release checklist](docs/RELEASING.md),
-[v0.1.0 notes](docs/RELEASE-NOTES-0.1.0-DRAFT.md) and
-[store submission](store/SUBMISSION-DRAFT.md). A formal build must be revalidated
+Source-repository creation, formal-package validation and the public Release
+were separately authorized. The Release is published and its public assets
+verified; store submission has not been authorized or performed, and production
+installation remains a separate step. See the
+[publication record](docs/RELEASE-2026-10-08-0.1.0.md),
+[release checklist](docs/RELEASING.md) and
+[store submission draft](store/SUBMISSION-DRAFT.md). A formal build must be revalidated
 after changing its version and repository metadata; development DLL evidence
 must not be relabeled as a formal artifact's evidence.

@@ -1,6 +1,8 @@
 # Changelog
 
-## 0.1.0 (locally validated artifacts; not published or installed)
+## 0.1.0 (2026-10-08)
+
+- Publish the separately authorized Windows amd64 Release, then anonymously download both public assets and verify exact bytes, SHA256, checksum contents and all ZIP members against the sealed formal package. Fix the remote `v0.1.0` tag to tested source `875864934cf82dbba90a7f85985f36ebd3a256d1`; preserve inherited local upstream tags and update only documentation on `main`. No production upgrade, model calls or store PR. See [the publication record](docs/RELEASE-2026-10-08-0.1.0.md).
 
 - Build a new Windows amd64 artifact from source commit `875864934cf82dbba90a7f85985f36ebd3a256d1`, registering numeric version `0.1.0` and the confirmed project repository. Keep runtime source, SDK pin and policy unchanged; do not rename the old development DLL into a release.
 - Re-run local Go unit/race/vet/fuzz, 31 native ABI cases, 19 Python tests and 150 isolated case executions across CPA 8.0.13/8.0.15/8.0.16 on the identical formal DLL. Package its bytes with retained licenses, check ZIP/checksum integrity and rerun the same 31 native cases on the packaged DLL.
