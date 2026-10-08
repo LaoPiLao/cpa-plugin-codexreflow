@@ -2,7 +2,8 @@
 
 ## 当前准备状态 — 2026-10-08
 
-目标正式版本 `0.1.0`，已验证并安装的本地开发版为 `0.1.0-dev.5`。
+`0.1.0` Windows amd64 发布包已完成本地构建、离线/隔离回归和 ZIP 字节验收，尚未上传或安装。
+此前已验证并安装的本地开发版为 `0.1.0-dev.5`，本轮没有替换它。
 **已创建公开源码仓库，本次授权只覆盖代码推送；没有发布二进制 Release 或商店 PR。**
 仓库：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)。
 
@@ -15,10 +16,11 @@
 | 全面验收 | 真实 HTTP/SSE、复杂历史、取消/重连等边界仍待补；未评价答案质量 |
 | 仓库与发布授权 | `LaoPiLao` 公开仓库已创建，代码推送获授权；`origin` 指向新项目，`upstream` 保留；正式发布另需授权 |
 | 建仓源码检查 | 仅改模块归属，当前源码 unit/race/vet/fuzz、31 项原生 ABI、19 项 Python 测试通过；不替换已安装 DLL |
-| 正式构件 / CI | `0.1.0` 正式构件尚未构建验证；远程 CI 看 [Actions](https://github.com/LaoPiLao/cpa-plugin-codexreflow/actions)，不能复制开发版证据冒充正式版 |
-| Release / 商店 | 说明和提交草稿已写好；真实下载链接、正式 SHA256、上传与 PR 尚未完成 |
+| 正式构件 | `0.1.0` 新 DLL：unit/race/vet/fuzz、31 项原生 ABI、19 项 Python、三宿主 150 次隔离案例执行通过；ZIP 内 DLL 另重跑同一组 31 项通过 |
+| 远程 CI | 源提交 `8758649` 的 Windows/Linux job 成功；workflow 是开发构建，不是正式 DLL 哈希的远程验证 |
+| Release / 商店 | 本地 ZIP / checksums 已生成，正式 SHA256 见 [验收记录](VALIDATION-2026-10-08-0.1.0.md)；说明与 PR 草稿已更新，公开上传/链接及商店 PR 尚未完成 |
 
-证据：[dev.5 隔离验证](VALIDATION-2026-10-07-dev5.md)、[有限真实核对](VALIDATION-2026-10-08-live-dev5.md)。
+证据：[0.1.0 本地发布包验收](VALIDATION-2026-10-08-0.1.0.md)、[dev.5 隔离验证](VALIDATION-2026-10-07-dev5.md)、[有限真实核对](VALIDATION-2026-10-08-live-dev5.md)。
 草稿：[首发说明](RELEASE-NOTES-0.1.0-DRAFT.md)、[商店提交](../store/SUBMISSION-DRAFT.md)。
 
 ## 本地候选与正式版分开
@@ -50,9 +52,10 @@ ZIP 包含许可证、脱敏证据计数/哈希、逐文件清单和只读诊断
 - [x] 用户确认 `LaoPiLao/cpa-plugin-codexreflow` 为公开仓库，授权建仓及代码推送。
 - [x] `go.mod` 使用 `github.com/LaoPiLao/cpa-plugin-codexreflow`；SDK 固定 `8.0.13`。
 - [ ] 另行取得正式二进制 Release 的发布授权；商店 PR 也须单独授权。
-- [ ] 注册 metadata / 商店条目使用自己的来源和作者，不冒充 uf-hy。
-- [ ] 保留 LICENSE、第三方版权声明和二进制所需许可文本；复核遗留素材。
-- [ ] 对确认后的正式构件重新跑单元、race、vet、fuzz、真实 DLL smoke、隔离 HTTP/WS 回归和远程 CI。
+- [x] 正式 DLL 的 ID/版本/来源/作者已读回，商店草稿为本项目所有者，不冒充 uf-hy。
+- [x] ZIP 内 LICENSE、第三方声明和完整许可文本逐字节核对，上游档案保留来源标注。
+- [x] 正式 DLL 本地 unit/race/vet/fuzz、原生 ABI、Python、隔离 HTTP/WS 和 ZIP 字节回归通过。
+- [x] 同源提交远程 Windows/Linux CI 成功；它是开发构建，不当作正式 DLL 哈希的远程验证。
 - [ ] `docs/COMPATIBILITY.md` 的首发范围、实际传输和有限真实证据准确；未验收边界明确列为限制，不声称全面通过。
 - [ ] README 不声称未验证的平台、全模型支持或普遍质量提升。
 - [ ] 禁止密钥、账号和生产请求记录入库。官方 store 模板中的占位符必须替换。
@@ -81,4 +84,4 @@ SHA256 写入 `checksums.txt`。打包工具会检查真实 DLL 的插件 ID、�
 
 目前 workflow 只有 read 权限，只产出开发构件；尚无自动发布任务。
 
-推荐下一步：先检查首次远程 CI，再单独授权正式构件验证与发布；不要把代码推送当作商店提交授权。
+推荐下一步：审阅正式包验收和首发说明，再单独授权 `v0.1.0` Release 上传；不要把本地打包或代码推送当作商店提交授权。

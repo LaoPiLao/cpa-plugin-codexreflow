@@ -8,6 +8,7 @@ CPA 的 Codex 推理续接与流式兼容插件。基于
 
 ## 当前状态
 
+- `0.1.0` Windows amd64 发布包已完成本地构建与离线/隔离 HTTP/WS 回归、ZIP 字节验收，尚未上传 Release、安装到生产或收录商店；先前 dev.5 的真实使用样本不移作正式 DLL 在线验收。见 [正式包验收记录](docs/VALIDATION-2026-10-08-0.1.0.md)。
 - 当前本地开发版：`0.1.0-dev.5`，插件 ID：`codexreflow`；2026-10-07 23:38（UTC+8）经授权安装到 CPA `8.0.16`，尚无公开二进制 Release。增加按次逐轮脱敏诊断、只读汇总工具和独立的本地候选打包器，不修改续写策略。见 [诊断说明](docs/DIAGNOSTICS.md)、[dev.5 验证记录](docs/VALIDATION-2026-10-07-dev5.md)、[安装记录](docs/DEPLOYMENT-2026-10-07-dev5.md)。
 - 10 月 8 日截至 01:42:48（UTC+8）的只读核对：两个已有会话共 22 条已完成上游记录均为 HTTP 200，16 次处理的客户端合并用量吻合，6 次实际续接（其中 4 次原生 WS 增量路径），两个会话均有完整回答和工具往返记录。全部上游样本使用 WS；不覆盖仍在运行的请求、真实 HTTP/SSE 的全面验收或答案质量。见 [dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md)。
 - SDK 锁定为 CLIProxyAPI `v8.0.13`，无相邻目录 `replace`，不追随宿主最新版本自动构建。
@@ -166,7 +167,7 @@ dev.5 另记录同一 `run_id` 的 `fold_started` 和每轮 `round_finished`，�
 ## 发布与商店
 
 仓库归属、Go 模块路径和商店草稿已使用本项目的真实 URL。本次授权只覆盖公开源码建仓及代码推送，
-不包含二进制 Release 或商店提交；正式构件仍需另行授权、重新验证并打包 ZIP / SHA256。
+不包含二进制 Release 或商店提交；随后已另获本地正式包构建/验收授权并完成，公开上传仍需确认。
 见 [发布清单](docs/RELEASING.md)、[首发说明草稿](docs/RELEASE-NOTES-0.1.0-DRAFT.md) 和 [商店提交草稿](store/SUBMISSION-DRAFT.md)。
 CI 只测试和上传开发构件，不自动创建 GitHub Release、发 PR 或上架。
 

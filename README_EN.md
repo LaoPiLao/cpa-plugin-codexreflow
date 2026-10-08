@@ -9,6 +9,12 @@ Not an official OpenAI or CLIProxyAPI plugin.
 
 ## Development status
 
+A Windows amd64 `0.1.0` release package has now passed local offline ABI and
+isolated HTTP/WS validation, including ZIP byte checks. It has not been uploaded
+as a Release, installed in production or submitted to the store. Historical
+dev.5 live samples are not live acceptance of this new DLL. See the
+[formal-package record](docs/VALIDATION-2026-10-08-0.1.0.md).
+
 Current local development build: `0.1.0-dev.5`, installed with authorization on
 CPA `8.0.16` at 23:38 UTC+8 on October 7, with effective registration read back;
 no public binary Release yet. See [deployment record](docs/DEPLOYMENT-2026-10-07-dev5.md).

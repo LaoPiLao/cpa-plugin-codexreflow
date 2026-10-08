@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0 (locally validated artifacts; not published or installed)
+
+- Build a new Windows amd64 artifact from source commit `875864934cf82dbba90a7f85985f36ebd3a256d1`, registering numeric version `0.1.0` and the confirmed project repository. Keep runtime source, SDK pin and policy unchanged; do not rename the old development DLL into a release.
+- Re-run local Go unit/race/vet/fuzz, 31 native ABI cases, 19 Python tests and 150 isolated case executions across CPA 8.0.13/8.0.15/8.0.16 on the identical formal DLL. Package its bytes with retained licenses, check ZIP/checksum integrity and rerun the same 31 native cases on the packaged DLL.
+- Keep prior artifacts and production untouched. No additional live-model calls, production installation, commit/push, tag, Release upload or store PR in this validation step. Source CI passes independently; it is a development build, not remote validation of this formal DLL hash. See [the formal-package record](docs/VALIDATION-2026-10-08-0.1.0.md).
+
 ## 2026-10-08 source repository bootstrap (no binary release)
 
 - Establish the public source repository under `LaoPiLao/cpa-plugin-codexreflow` with separate authorization for creation and code push only. Preserve upstream history/attribution; do not publish inherited tags, a Release or a store PR.

@@ -1,7 +1,8 @@
 # 商店提交草稿 — CodexReflow
 
 **未提交。** 源码仓库已确认并创建为公开的 `LaoPiLao/cpa-plugin-codexreflow`；
-本次授权只覆盖建仓和代码推送，正式 Release 与商店 PR 尚未授权，正式资产尚不存在。
+此前授权完成建仓和代码推送；随后经授权完成 `0.1.0` 本地正式包验收。
+正式 Release 上传与商店 PR 尚未授权，资产尚未公开可下载。
 本文不是授权，也不是已经满足资产存在要求的证明。不要把本地候选 ZIP 交给商店安装器。
 
 ## 注册表条目
@@ -24,6 +25,10 @@
 - Latest release: **待填写实际存在的 `v0.1.0` Release 链接**
 - Windows amd64 asset: **待填写实际存在的 `codexreflow_0.1.0_windows_amd64.zip` 下载链接**
 - Checksums: **待填写实际存在的 `checksums.txt` 下载链接及核验结果**
+
+本地正式包已有 [验收记录](../docs/VALIDATION-2026-10-08-0.1.0.md)；ZIP SHA256 为
+`63e0c62b414bea0dd98f1225f7507b78dcf8d0e7505e88147542a013ae8bd52d`。
+这不是公开下载存在证据，提交前仍须上传后重新下载核验。
 
 CodexReflow is an independent MIT-licensed fork of CodexComp v0.1.7. It adds
 HTTP/SSE and raw WebSocket event decoding/folding, bounded native WS incremental

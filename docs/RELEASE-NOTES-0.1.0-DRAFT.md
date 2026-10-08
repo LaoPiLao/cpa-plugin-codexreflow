@@ -1,8 +1,8 @@
 # CodexReflow v0.1.0 — 首发说明草稿
 
-**未发布，不能直接当作正式 Release 说明。** 目标正式版本为 `0.1.0`；当前已经验证和安装的构件是
-`0.1.0-dev.5`。源码仓库归属已确认；另获正式发布授权并重新验证正式构件后，才能移除草稿提示和填写下载链接/哈希。
-不通过改名把开发 DLL 当成正式版。
+**未发布，仍是说明草稿。** `0.1.0` Windows amd64 发布包已完成本地构建及离线/隔离验收，尚未安装或上传；
+先前安装版 `0.1.0-dev.5` 未替换。另获正式发布授权、上传并核验真实下载链接后，才能移除草稿提示。
+正式构件是新构建，不是开发 DLL 改名。
 
 ## 项目简介
 
@@ -22,17 +22,24 @@ CodexReflow · 续流是基于 CodexComp v0.1.7 的独立 CPA 插件分支，关
 
 ## 证据与首发范围
 
-以下是 **dev.5 的已有证据**，不是尚未构建的正式 `0.1.0` 的测试结果：
+**正式 `0.1.0` 的本地证据：**
 
 - Windows amd64：Go unit/race/vet/fuzz，31 项原生 ABI、19 项 Python 测试；相同 DLL 在 CPA
   `8.0.13` / `8.0.15` / `8.0.16` 各通过 50 次隔离案例执行，SDK 固定为 `8.0.13`。
   合成上游不调用真实账号；150 次执行并非 150 种独立场景。
+- 正式 ZIP 内容/校验文件通过；其中的实际 DLL 与被测构件逐字节相同，另重跑同一组 31 项原生 ABI 通过。
+- 源码提交 `875864934cf82dbba90a7f85985f36ebd3a256d1` 的远程 Windows/Linux CI 成功；
+  workflow 构建的是开发版本，不是正式 DLL 哈希的远程证明。
+
+**dev.5 的历史真实使用证据，不移作正式 DLL 在线通过：**
+
 - 2026-10-08 截至 01:42:48（UTC+8）的两个已有聊天：22 条已完成上游 WS 行均为 200；
   16 次处理的五项客户端合并用量吻合，6 次实际续接（含 4 次原生增量），两聊天均有工具往返和完整回答。
-- 当前只准备 Windows amd64 首发资产，不宣称 Linux/macOS 已通过验证；正式构件和完整线上边界仍待验收。
-  远程检查以 [Actions](https://github.com/LaoPiLao/cpa-plugin-codexreflow/actions) 的实际结果为准。
+- 这个正式 DLL 没有调用真实模型或安装到生产，完整线上边界及质量仍待验收。
+- 首发资产仅为 Windows amd64；Linux 源码/合成 ABI CI 通过不等于 Linux/macOS 正式资产或完整 CPA 集成验收。
 
-具体限制及时间窗口见 [兼容性](COMPATIBILITY.md)、[dev.5 隔离验证](VALIDATION-2026-10-07-dev5.md)、
+具体限制及时间窗口见 [正式包验收](VALIDATION-2026-10-08-0.1.0.md)、[兼容性](COMPATIBILITY.md)、
+[dev.5 隔离验证](VALIDATION-2026-10-07-dev5.md)、
 [dev.5 真实核对](VALIDATION-2026-10-08-live-dev5.md)。不公开原始生产日志或使用量数据库。
 
 ## 已知限制与费用/隐私提醒
@@ -48,9 +55,10 @@ CodexReflow · 续流是基于 CodexComp v0.1.7 的独立 CPA 插件分支，关
 ## 正式发布前填写
 
 - 仓库与维护者：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)，公开源码；正式二进制发布尚未授权。
-- 标签：目标 `v0.1.0`；正式 DLL 注册版本须为 `0.1.0`，来源须为确认后的真实仓库。
+- 标签：目标 `v0.1.0`，尚未创建；本地 DLL 已注册 `0.1.0` 和真实仓库来源。
 - Windows 资产：`codexreflow_0.1.0_windows_amd64.zip`，根目录仅一份 `codexreflow.dll`，附许可证。
-- 校验：发布新生成的 `checksums.txt`；填写正式 ZIP/DLL SHA256，不能复制 dev.5 的哈希冒充正式构件。
+- ZIP SHA256：`63e0c62b414bea0dd98f1225f7507b78dcf8d0e7505e88147542a013ae8bd52d`，与本地 `checksums.txt` 一致。
+- DLL SHA256：`6f2bb2cec1adb8db02925170fb3c35b0176ea474687f7620bf993816ad8402a0`，对应上述全部 DLL 回归报告。
 - 安装入口：待正式 Release 上传并核验可下载后填写。当前只有源码仓库，没有二进制 Release 或商店提交。
 
-推荐下一步：先按 [发布清单](RELEASING.md) 检查远程 CI，再经授权验证正式构件；不要直接上传本地候选包。
+推荐下一步：按 [发布清单](RELEASING.md) 单独确认 Release 发布授权，上传已验收正式包并重新下载核验；商店 PR 不在该授权内。
