@@ -1,9 +1,11 @@
 # 商店提交草稿 — CodexReflow
 
-**未提交。** 源码仓库已确认并创建为公开的 `LaoPiLao/cpa-plugin-codexreflow`；
+**首次提交已关闭，当前未上架。** 源码仓库已确认并创建为公开的 `LaoPiLao/cpa-plugin-codexreflow`；
 建仓、正式包验收及公开 Release 分别经授权完成，`v0.1.0` 资产已匿名下载核验。
-**商店 PR 尚未授权或提交。** 公开下载证据见 [发布记录](../docs/RELEASE-2026-10-08-0.1.0.md)，
-本文本身不是提交授权。不要把旧本地候选 ZIP 交给商店安装器。
+首次商店 [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222) 已单独获授权提交，
+2026-10-09 被关闭：此次审核要求五平台包，Windows-only 不满足。公开旧版下载证据见
+[发布记录](../docs/RELEASE-2026-10-08-0.1.0.md)；补齐流程见 [五平台说明](../docs/MULTIPLATFORM.md)。
+本轮只准备工作分支和 CI；新版发布/重提 PR 尚未授权。不要把旧候选 ZIP 当作商店正式包。
 
 ## 注册表条目
 
@@ -17,9 +19,9 @@
 
 `Add CodexReflow plugin`
 
-## PR 正文草稿
+## 首次 PR 正文材料（历史，不直接用于新版重提）
 
-> 以下真实链接已复核；仍是未提交的 PR 正文草稿，提交当天需重查资产、规则及 ID 唯一性。
+> 以下为 `v0.1.0` 首次提交材料。新版必须在五平台包实际发布和下载核验后更换对应链接/版本/证据，不能只删除平台限制。
 
 - Repository: [LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)
 - Latest release: [v0.1.0](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0)
@@ -44,7 +46,9 @@ remain in the author's repository. Upstream licenses and attribution are retaine
 
 ## 提交前检查
 
-- [ ] 用户明确授权商店 PR；不能将仓库创建或本地试装授权当作商店提交授权。
+- [x] 首次 PR #222 经授权提交，但因缺少平台资产被关闭。
+- [ ] 用户另行授权新版发布及商店重提；不能将工作分支/CI 授权当作重提授权。
+- [ ] 五平台实际资产及统一 `checksums.txt` 已发布并下载复核；不能只添加不存在的链接。
 - [x] 正式仓库、Release、ZIP、checksums 四项链接可公开访问；不是占位符或 `local://` 来源。
 - [x] 标签、DLL 注册版本、ZIP 名称、校验文件和仓库来源完全匹配。
 - [x] 匿名下载后复核 SHA256；ZIP 根部只有 `codexreflow.dll` 一份动态库，没有绝对/越界路径。
@@ -55,4 +59,5 @@ remain in the author's repository. Upstream licenses and attribution are retaine
 核对依据（2026-10-08）：[官方商店说明](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store#adding-a-plugin)、
 [官方注册表](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/blob/main/registry.json)。提交当天仍需重查。
 
-推荐下一步：单独获授权后重查官方规则、ID 唯一性和公开资产，只提交注册表 PR，不改其他条目或生产配置。
+推荐下一步：先验收五平台候选 CI；另获发布/重提授权后替换此处历史材料，重查规则、ID 唯一性和公开资产，
+仍只提交注册表 PR，不改其他条目或生产配置。

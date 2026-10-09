@@ -8,6 +8,7 @@ CPA 的 Codex 推理续接与流式兼容插件。基于
 
 ## 当前状态
 
+- 2026-10-09 商店 [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222) 因缺少 Linux/macOS 两种架构的二进制被关闭，尚未上架。工作分支准备 `0.1.1` 五平台离线构建/打包流程，原生 CI 的实际通过状态以对应运行记录为准；**没有发布新 Release、重提商店 PR 或改变生产安装**。见 [五平台流程与边界](docs/MULTIPLATFORM.md)。
 - [`v0.1.0` Windows amd64 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 已于 2026-10-08 公开发布；ZIP 和校验文件通过匿名下载及字节复核。正式包已通过离线/隔离 HTTP/WS 回归，未安装到生产或收录商店；先前 dev.5 的真实样本不移作正式 DLL 在线验收。见 [正式包验收](docs/VALIDATION-2026-10-08-0.1.0.md) 和 [公开发布记录](docs/RELEASE-2026-10-08-0.1.0.md)。
 - 此前已安装开发版：`0.1.0-dev.5`，插件 ID：`codexreflow`；2026-10-07 23:38（UTC+8）经授权安装到 CPA `8.0.16`，本次发布没有替换它。增加按次逐轮脱敏诊断、只读汇总工具和独立的本地候选打包器，不修改续写策略。见 [诊断说明](docs/DIAGNOSTICS.md)、[dev.5 验证记录](docs/VALIDATION-2026-10-07-dev5.md)、[安装记录](docs/DEPLOYMENT-2026-10-07-dev5.md)。
 - 10 月 8 日截至 01:42:48（UTC+8）的只读核对：两个已有会话共 22 条已完成上游记录均为 HTTP 200，16 次处理的客户端合并用量吻合，6 次实际续接（其中 4 次原生 WS 增量路径），两个会话均有完整回答和工具往返记录。全部上游样本使用 WS；不覆盖仍在运行的请求、真实 HTTP/SSE 的全面验收或答案质量。见 [dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md)。
@@ -169,7 +170,8 @@ dev.5 另记录同一 `run_id` 的 `fold_started` 和每轮 `round_finished`，�
 ## 发布与商店
 
 仓库归属、Go 模块路径和商店草稿已使用本项目的真实 URL。建仓、正式包验收和公开 Release 分别取得授权；
-`v0.1.0` 已发布并完成公开下载复核，商店 PR 尚未授权或提交，生产安装仍是独立步骤。
+`v0.1.0` 已发布并完成公开下载复核，随后另获授权提交商店 PR #222，但已因平台资产不足被关闭。
+五平台构建/验证是新的工作分支步骤；发布新版本、重提商店 PR 和生产安装仍需分别确认。
 见 [发布记录](docs/RELEASE-2026-10-08-0.1.0.md)、[发布清单](docs/RELEASING.md) 和 [商店提交草稿](store/SUBMISSION-DRAFT.md)。
 CI 只测试和上传开发构件，不自动创建 GitHub Release、发 PR 或上架。
 

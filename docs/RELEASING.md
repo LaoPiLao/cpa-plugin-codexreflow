@@ -1,11 +1,13 @@
 # 发布清单
 
-## 当前发布状态 — 2026-10-08
+## 当前发布与商店状态 — 2026-10-09
 
 [`v0.1.0` Windows amd64 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0)
 已公开发布并设为 latest，ZIP / checksums 通过匿名下载及字节验收，未安装到生产。
 此前已验证并安装的本地开发版为 `0.1.0-dev.5`，本轮没有替换它。
-**公开 Release 和文档推送已单独获授权并完成；商店 PR 尚未授权或提交。**
+**公开 Release 和首个商店 PR 分别获授权；PR #222 已关闭，尚未上架。**
+维护者此次审核要求 Darwin amd64/arm64、Linux amd64/arm64、Windows amd64 五个平台资产。
+工作分支准备 `0.1.1` 原生构建/打包验证，不修改 `v0.1.0`；本轮不发布、不重提 PR、不安装生产。
 仓库：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)。
 
 | 项目 | 已有证据 / 尚待完成 |
@@ -19,7 +21,7 @@
 | 建仓源码检查 | 仅改模块归属，当前源码 unit/race/vet/fuzz、31 项原生 ABI、19 项 Python 测试通过；不替换已安装 DLL |
 | 正式构件 | `0.1.0` 新 DLL：unit/race/vet/fuzz、31 项原生 ABI、19 项 Python、三宿主 150 次隔离案例执行通过；ZIP 内 DLL 另重跑同一组 31 项通过 |
 | 远程 CI | 源提交 `8758649` 的 Windows/Linux job 成功；workflow 是开发构建，不是正式 DLL 哈希的远程验证 |
-| Release / 商店 | Release 已公开，ZIP / checksums 匿名下载一致；标签指向被测源码 `8758649`，文档另更新于 `main`；商店 PR 未提交 |
+| Release / 商店 | `v0.1.0` 已公开并验收下载；商店 PR #222 因仅有 Windows 包被关闭；五平台原生 CI 结果须另读回，不把源码 CI 当作新包证明 |
 
 证据：[公开发布与下载核验](RELEASE-2026-10-08-0.1.0.md)、[0.1.0 本地发布包验收](VALIDATION-2026-10-08-0.1.0.md)、[dev.5 隔离验证](VALIDATION-2026-10-07-dev5.md)、[有限真实核对](VALIDATION-2026-10-08-live-dev5.md)。
 草稿：[首发说明](RELEASE-NOTES-0.1.0-DRAFT.md)、[商店提交](../store/SUBMISSION-DRAFT.md)。
@@ -44,7 +46,10 @@ ZIP 包含许可证、脱敏证据计数/哈希、逐文件清单和只读诊断
 - 动态库必须在 ZIP 根部；Windows 为 `codexreflow.dll`，不能有多份动态库、绝对或越界路径。
 - 只提交注册表变更，并提供真实仓库、Release 标签及 ZIP/校验文件存在证据。草稿和本地测试报告不能代替下载核验。
 
-首发资产仅 Windows amd64，不因 CI 配置有 Linux job 就宣传 Linux/macOS 已验收；不承诺商店一定收录。
+已发布 `v0.1.0` 仅 Windows amd64。2026-10-09 的 [审核反馈](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222#issuecomment-6069997676)
+及 [项目 issue #1](https://github.com/LaoPiLao/cpa-plugin-codexreflow/issues/1) 明确要求五个平台预编译包；
+此前 README 的“每个支持平台”不足以确认只发布 Windows 可收录，不能再按这个假设重提。
+新版流程见 [五平台构建与验收](MULTIPLATFORM.md)；编译/原生 ABI 通过仍不是全面真实 CPA 集成认证。
 
 ## 正式构件发布前检查
 
@@ -53,7 +58,8 @@ ZIP 包含许可证、脱敏证据计数/哈希、逐文件清单和只读诊断
 - [x] 用户确认 `LaoPiLao/cpa-plugin-codexreflow` 为公开仓库，授权建仓及代码推送。
 - [x] `go.mod` 使用 `github.com/LaoPiLao/cpa-plugin-codexreflow`；SDK 固定 `8.0.13`。
 - [x] 另行取得正式二进制 Release 和文档推送授权，已完成发布及公开下载验收。
-- [ ] 另行取得商店 PR 授权；不能从 Release 授权推定。
+- [x] 首次商店 PR #222 单独获授权并提交，但因缺少平台资产被关闭。
+- [ ] 新版五平台 Release 与商店重提另行取得授权；不从工作分支/CI 授权推定。
 - [x] 正式 DLL 的 ID/版本/来源/作者已读回，商店草稿为本项目所有者，不冒充 uf-hy。
 - [x] ZIP 内 LICENSE、第三方声明和完整许可文本逐字节核对，上游档案保留来源标注。
 - [x] 正式 DLL 本地 unit/race/vet/fuzz、原生 ABI、Python、隔离 HTTP/WS 和 ZIP 字节回归通过。
@@ -67,16 +73,16 @@ ZIP 包含许可证、脱敏证据计数/哈希、逐文件清单和只读诊断
 
 ## 构建流程（不覆盖已封存版本）
 
-以下为版本化构建流程示例，不是重新生成或覆盖现有 `0.1.0` 的命令。
-`v0.1.0` 已封存发布；修改后使用新版本、新输出路径及独立验收，发布另获授权：
+`v0.1.0` 已封存发布；`VERSION` 的 `0.1.1` 是待验收/待发布包版本，不是已存在的 Release。
+在匹配的原生宿主和已提交源码上执行（Windows 先载入 `scripts/dev_env.ps1`）：
 
 ```powershell
-./scripts/build_windows.ps1 -Version 0.1.0 -Repository https://github.com/LaoPiLao/cpa-plugin-codexreflow
-python scripts/package_release.py --version 0.1.0 --repository https://github.com/LaoPiLao/cpa-plugin-codexreflow
+python scripts/build_platform.py --goos windows --goarch amd64
 ```
 
-包名 `codexreflow_0.1.0_windows_amd64.zip`；ZIP 根部为 `codexreflow.dll`，附许可文件；
-SHA256 写入 `checksums.txt`。打包工具会检查真实 DLL 的插件 ID、版本和来源，拒绝把开发版混入正式包。
+每个平台打包到独立、不可覆盖的目录；根部为 `.dll` / `.so` / `.dylib` 与三个许可文件。
+先验证原生注册及同库 ABI 报告，再从 ZIP 实际字节重跑相同测试；汇总器核对全部五个目录、
+来源/源码/版本、报告及文件哈希，生成统一五行 `checksums.txt`。完整命令见 [五平台流程](MULTIPLATFORM.md)。
 不要因为文件叫 `build/codexreflow.dll` 就认为它是最新构件；该非版本化路径可能保留旧构建。
 正式打包前必须成功执行上面的构建，并读回注册 metadata 与 SHA256，不跳过打包器的拒绝检查。
 
@@ -91,5 +97,5 @@ SHA256 写入 `checksums.txt`。打包工具会检查真实 DLL 的插件 ID、�
 
 目前 workflow 只有 read 权限，只产出开发构件；尚无自动发布任务。
 
-推荐下一步：审阅 [公开发布记录](RELEASE-2026-10-08-0.1.0.md) 和 [商店草稿](../store/SUBMISSION-DRAFT.md)，
-单独授权注册表 PR；提交当天重查商店规则和 ID 唯一性，不改生产安装或扩大平台声明。
+推荐下一步：完成并读回五平台 CI 的实际原生结果、下载核验候选包后，再单独确认新版发布和商店重提。
+不覆盖旧 Release，不因离线 ABI 通过而扩大真实集成或质量声明，不改生产安装。

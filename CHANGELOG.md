@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 (unreleased; five-platform packaging work)
+
+- Address the missing-platform feedback in store PR #222 / project issue #1 without changing Go implementation, SDK pin, continuation policy or production configuration. Preserve the sealed `v0.1.0` Release and inherited tags; deliberately prepare a separate `0.1.1` package version, not an overwrite.
+- Add native CI for Windows amd64, Linux amd64/arm64 and Darwin amd64/arm64 using pinned Go and action revisions. On each target run unit/race/vet/fuzz, Python tests, actual C ABI tests and the same suite against packaged library bytes. CI has read-only repository permissions and uploads candidate artifacts only.
+- Extend the release packager with PE/ELF/Mach-O type/architecture checks, native identity/report guards, exact root/license layout and immutable outputs. Collect exactly five same-commit, same-source packages with verified reports/checksums; fail on missing targets, mismatched provenance, unpassed cases or additional files.
+- Add synthetic container/provenance regression tests. Native mock tests are not full CPA integration or live-model acceptance; remote CI results must be read back before reporting platform validation.
+
 ## 0.1.0 (2026-10-08)
 
 - Publish the separately authorized Windows amd64 Release, then anonymously download both public assets and verify exact bytes, SHA256, checksum contents and all ZIP members against the sealed formal package. Fix the remote `v0.1.0` tag to tested source `875864934cf82dbba90a7f85985f36ebd3a256d1`; preserve inherited local upstream tags and update only documentation on `main`. No production upgrade, model calls or store PR. See [the publication record](docs/RELEASE-2026-10-08-0.1.0.md).

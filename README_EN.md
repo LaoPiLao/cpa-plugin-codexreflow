@@ -9,6 +9,12 @@ Not an official OpenAI or CLIProxyAPI plugin.
 
 ## Release and validation status
 
+On October 9, the store [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222)
+was closed because Linux/macOS amd64/arm64 binaries were missing. There is no store listing.
+A work branch prepares `0.1.1` five-platform native offline builds and guarded packaging;
+actual remote pass status requires its CI run evidence. No new Release, store resubmission
+or production upgrade is performed. See [the multiplatform workflow](docs/MULTIPLATFORM.md).
+
 A Windows amd64 [v0.1.0 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0)
 was published on October 8, 2026. Its ZIP and checksum file were downloaded
 anonymously and verified byte-for-byte against the sealed local package.
@@ -199,8 +205,9 @@ Formal release packaging requires a real GitHub repository. CI cannot publish
 releases or submit store PRs.
 Source-repository creation, formal-package validation and the public Release
 were separately authorized. The Release is published and its public assets
-verified; store submission has not been authorized or performed, and production
-installation remains a separate step. See the
+verified. Store PR #222 was subsequently authorized and submitted, but was closed
+for missing platform assets. A new Release, resubmission and production installation
+remain separately authorized steps. See the
 [publication record](docs/RELEASE-2026-10-08-0.1.0.md),
 [release checklist](docs/RELEASING.md) and
 [store submission draft](store/SUBMISSION-DRAFT.md). A formal build must be revalidated
