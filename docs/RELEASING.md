@@ -6,7 +6,7 @@
 已于 2026-10-09 18:43:21（UTC+8）公开并读回为 latest stable，五个 ZIP / 统一 checksums
 通过匿名下载及字节验收；公开 Windows DLL 另通过 31 项原生离线案例。未安装到生产。
 旧 `v0.1.0` 的正文、标签及资产保持不变；最近一次已记录的授权部署是 `0.1.0-dev.5`，本轮不替换生产安装。
-**构建、合并、发布与文档推送分别获授权；商店 PR #222 已关闭，尚未重提或上架。**
+**构建、合并、发布、商店重提与文档推送分别获授权；旧 PR #222 已关闭，新 [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) 已提交，当前开放、未合并、待审核，尚未上架。**
 五个平台资产已补齐，但原生 ABI 通过不等于全面 CPA/HTTP/WS、真实模型或 Desktop 验收。
 仓库：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)。
 
@@ -21,11 +21,11 @@
 | 历史 dev.5 有限真实使用 | 截至 10 月 8 日 01:42:48（UTC+8），22 条已完成 WS 上游行、16 次客户端用量核对、6 次续接；两个聊天均有工具往返和完整回答，不代表新包在线验收 |
 | 仓库与发布授权 | `LaoPiLao` 公开仓库已创建；代码推送、正式包验收和 Release 分别获授权；`upstream` 及本地继承标签保留 |
 | 历史 v0.1.0 构件 | Windows DLL 通过 unit/race/vet/fuzz、31 项原生 ABI、19 项 Python、三宿主 150 次隔离案例；其开发 CI 不是正式 DLL 哈希证明 |
-| Release / 商店 | `v0.1.1` 已公开并验收下载，`v0.1.0` 封存保留；PR #222 因旧版只有 Windows 包被关闭，文档核对时注册表无本项目，重提需独立授权 |
+| Release / 商店 | `v0.1.1` 已公开并验收下载，`v0.1.0` 封存保留；PR #225 经独立授权重提，仅新增一个条目，原 111 条及 schema 不变；当前开放、未合并，官方注册表仍无本项目 |
 
-当前证据：[v0.1.1 发布与下载核验](RELEASE-2026-10-09-0.1.1.md)、[五平台流程](MULTIPLATFORM.md)。
+当前证据：[商店重提记录](STORE-SUBMISSION-2026-10-09-0.1.1.md)、[v0.1.1 发布与下载核验](RELEASE-2026-10-09-0.1.1.md)、[五平台流程](MULTIPLATFORM.md)。
 历史证据：[v0.1.0 发布](RELEASE-2026-10-08-0.1.0.md)、[0.1.0 本地验收](VALIDATION-2026-10-08-0.1.0.md)、[dev.5 隔离](VALIDATION-2026-10-07-dev5.md)、[有限真实核对](VALIDATION-2026-10-08-live-dev5.md)。
-下一步材料：[商店重提草稿](../store/SUBMISSION-DRAFT.md)；[0.1.0 首发草稿](RELEASE-NOTES-0.1.0-DRAFT.md)仅供历史参考。
+提交材料：[商店提交材料与状态](../store/SUBMISSION-DRAFT.md)；[0.1.0 首发草稿](RELEASE-NOTES-0.1.0-DRAFT.md)仅供历史参考。
 
 ## 本地候选与正式版分开
 
@@ -39,7 +39,7 @@ ZIP 包含许可证、脱敏证据计数/哈希、逐文件清单和只读诊断
 
 ## 已核对的商店规则
 
-2026-10-08 对照 [官方商店说明](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store#release-requirements)：
+2026-10-08 首发核对、10 月 9 日重提时再次复核 [官方商店说明](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store#release-requirements)：
 
 - 注册表保留插件信息；二进制、校验和 Release 说明放在作者自己的仓库。条目须有 ID、名称、简介、作者和真实仓库；提交当天重查 ID 唯一性。
 - 商店读取仓库 latest Release；标签为 `v` 加点分数字版本。开发版 `0.1.0-dev.5` 不符合该正式版本要求。
@@ -51,7 +51,8 @@ ZIP 包含许可证、脱敏证据计数/哈希、逐文件清单和只读诊断
 及 [项目 issue #1](https://github.com/LaoPiLao/cpa-plugin-codexreflow/issues/1) 明确要求五个平台预编译包；
 此前 README 的“每个支持平台”不足以确认只发布 Windows 可收录，不能再按这个假设重提。
 `v0.1.1` 已发布全部五个平台资产，流程见 [五平台构建与验收](MULTIPLATFORM.md)；
-编译/原生 ABI 通过仍不是全面真实 CPA 集成认证，补齐资产也不保证商店收录。重提当天仍需重查规则。
+编译/原生 ABI 通过仍不是全面真实 CPA 集成认证，补齐资产也不保证商店收录。
+重提前已复核规则、ID 唯一性及全部公开资产；任何未来提交仍需当日重查。
 
 ## v0.1.1 已完成检查与待办
 
@@ -61,7 +62,8 @@ ZIP 包含许可证、脱敏证据计数/哈希、逐文件清单和只读诊断
 - [x] `go.mod` 使用 `github.com/LaoPiLao/cpa-plugin-codexreflow`；SDK 固定 `8.0.13`。
 - [x] 五平台构建、main 合并、新版 Release 与文档推送分别获授权，发布及公开下载验收已完成。
 - [x] 首次商店 PR #222 单独获授权并提交，但因缺少平台资产被关闭。
-- [ ] 商店重提另行取得授权；不从已有构建/发布/文档推送授权推定。
+- [x] 商店重提独立获授权，PR #225 已提交并读回为仅改 `registry.json`；不从已有构建/发布授权推定。
+- [ ] 维护者审核及合并未完成，官方注册表尚无条目；`CLEAN` 不等于审核通过，不声称已上架。
 - [x] 五平台正式库 ID/版本/仓库来源已原生读回；公开 Windows DLL 另读回 `0.1.1` 与真实仓库，商店草稿不冒充 uf-hy。
 - [x] ZIP 内 LICENSE、第三方声明和完整许可文本逐字节核对，上游档案保留来源标注。
 - [x] 发布源 main CI 五平台 unit/race/vet/fuzz、47 项 Python、原生 ABI 与包内字节回归通过，汇总 job 成功。
@@ -96,12 +98,13 @@ python scripts/build_platform.py --goos windows --goarch amd64
 本地两个同名标签均继承自 CodexComp，保留不动，**不要执行 `git push --tags`、整批标签同步或强制移动标签**。
 新检出可正常取得 Reflow 的远程标签；已有继承标签的维护目录须使用明确源码 SHA，不以本地同名标签推定源码。
 
-待另行授权后，向 [官方注册表](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store)提仅改 `registry.json` 的 PR，
-带仓库、版本、构件存在证据和功能简介。最终收录由维护者审核，不保证通过。
+经独立授权，已向 [官方注册表](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store)提交仅改 `registry.json` 的 PR #225，
+附仓库、版本、五平台构件下载证据及功能简介。最终收录由维护者审核，不保证通过。
+本次只同步文档，不再次提交/评论 PR；后续修改或新提交保持独立授权。
 发布/上传/发 PR 都不能因为写好了脚本或用户要求测试而自动执行。
 
 目前 workflow 只有 read 权限，只产出开发/正式包候选；尚无自动发布任务。
 后续文档提交会再次触发 CI，即使候选版本/文件名相同，也不覆盖已发布包，不移动固定标签。
 
-推荐下一步：审阅已更新的重提草稿，再单独确认只改官方 `registry.json` 的商店 PR。
+推荐下一步：等待维护者审核，再根据反馈处理；合并后另读回官方注册表确认收录。
 不覆盖旧 Release，不因离线 ABI 通过而扩大真实集成或质量声明，不改生产安装。

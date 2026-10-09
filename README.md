@@ -8,8 +8,8 @@ CPA 的 Codex 推理续接与流式兼容插件。基于
 
 ## 当前状态
 
-- [`v0.1.1` 五平台 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.1) 已于 2026-10-09 18:43:21（UTC+8）公开并读回为 latest stable。Windows amd64、Linux amd64/arm64、macOS amd64/arm64 原生 CI 全部通过；五个 ZIP 和统一校验文件均经匿名下载逐字节复核。公开下载的 Windows DLL 另通过 31 项原生离线案例。**未安装到生产、未重提商店，亦非五平台全面 CPA/真实模型验收。** 见 [本次发布记录](docs/RELEASE-2026-10-09-0.1.1.md) 和 [五平台流程与边界](docs/MULTIPLATFORM.md)。
-- 商店 [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222) 因旧版只有 Windows 包于 10 月 9 日关闭、未合并；本次核对官方注册表仍无 `codexreflow`。五平台包已补齐，但重提需要另行确认，不保证收录。
+- [`v0.1.1` 五平台 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.1) 已于 2026-10-09 18:43:21（UTC+8）公开并读回为 latest stable。Windows amd64、Linux amd64/arm64、macOS amd64/arm64 原生 CI 全部通过；五个 ZIP 和统一校验文件均经匿名下载逐字节复核。公开下载的 Windows DLL 另通过 31 项原生离线案例。**未安装到生产，亦非五平台全面 CPA/真实模型验收。** 见 [本次发布记录](docs/RELEASE-2026-10-09-0.1.1.md) 和 [五平台流程与边界](docs/MULTIPLATFORM.md)。
+- 商店已于 10 月 9 日经独立授权重提 [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225)，**当前开放、未合并，待维护者审核，尚未上架**。只新增一个注册条目，保留原有 111 个条目；五平台资产重提前再次匿名下载复核通过。旧 [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222) 因 Windows-only 被关闭，保留不动；补齐包不保证收录。见 [商店重提记录](docs/STORE-SUBMISSION-2026-10-09-0.1.1.md)。
 - 历史 [`v0.1.0` Windows amd64 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 于 2026-10-08 公开，正文/标签/资产保留不变，不再是 latest。其正式包通过离线/隔离 HTTP/WS 回归，未安装到生产；旧证据不移作 `0.1.1` 新构件集成验收。见 [旧正式包验收](docs/VALIDATION-2026-10-08-0.1.0.md) 和 [旧发布记录](docs/RELEASE-2026-10-08-0.1.0.md)。
 - 最近一次已记录的授权部署为开发版 `0.1.0-dev.5`，插件 ID：`codexreflow`；2026-10-07 23:38（UTC+8）安装到 CPA `8.0.16`，本次发布及文档更新不替换生产安装。dev.5 增加按次逐轮脱敏诊断、只读汇总工具和独立的本地候选打包器，不修改续写策略。见 [诊断说明](docs/DIAGNOSTICS.md)、[dev.5 验证记录](docs/VALIDATION-2026-10-07-dev5.md)、[安装记录](docs/DEPLOYMENT-2026-10-07-dev5.md)。
 - 10 月 8 日截至 01:42:48（UTC+8）的只读核对：两个已有会话共 22 条已完成上游记录均为 HTTP 200，16 次处理的客户端合并用量吻合，6 次实际续接（其中 4 次原生 WS 增量路径），两个会话均有完整回答和工具往返记录。全部上游样本使用 WS；不覆盖仍在运行的请求、真实 HTTP/SSE 的全面验收或答案质量。见 [dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md)。
@@ -185,10 +185,10 @@ dev.5 另记录同一 `run_id` 的 `fold_started` 和每轮 `round_finished`，�
 
 仓库归属、Go 模块路径和商店草稿使用本项目真实 URL。建仓、正式包验收、发布及文档推送分别获授权；
 `v0.1.1` 五平台 Release 已发布并完成公开下载复核，旧版 `v0.1.0` 保留不变。
-首个商店 PR #222 已关闭；本次只更新重提材料，不提交 PR，不改变生产安装。
-见 [本次发布记录](docs/RELEASE-2026-10-09-0.1.1.md)、[发布清单](docs/RELEASING.md) 和 [商店提交草稿](store/SUBMISSION-DRAFT.md)。
+首个商店 PR #222 已关闭；随后独立获授权重提 [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225)，目前待审核、未合并。
+本次仅同步文档，不再提交/评论 PR，不改变生产安装。见 [商店重提记录](docs/STORE-SUBMISSION-2026-10-09-0.1.1.md)、[发布清单](docs/RELEASING.md) 和 [商店提交材料](store/SUBMISSION-DRAFT.md)。
 CI 只有读取仓库的权限，只生成候选构件，不自动创建 Release、移动标签、发 PR 或上架。
-下一步建议单独确认商店重提；生产试装和真实模型测试仍保持独立授权。
+下一步等待维护者审核，再按反馈处理；生产试装和真实模型测试仍保持独立授权。
 
 ## 来源与许可证
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-09 store resubmission (no new binary release)
+
+- With separate authorization, submit [store PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) after the closed #222: append one `codexreflow` entry to `registry.json`, preserving all 111 existing entries and schema metadata. Keep the old PR/branch and fork main unchanged. Read back the new PR as open, unmerged and registry-only; this is not store acceptance.
+- Recheck store rules and ID uniqueness; anonymously download all five v0.1.1 ZIPs and checksums again, verifying exact tested bytes, SHA256, CRC, architecture and retained licenses. Keep plugin implementation, SDK, release tags/assets and production unchanged; no extra live-model test calls. Update documentation separately. See [the submission record](docs/STORE-SUBMISSION-2026-10-09-0.1.1.md).
+
 ## 0.1.1 (2026-10-09)
 
 - Publish the separately authorized five-platform Release from tested main source `6c71eee479e9939a3d300b9231117fae11eef296` and CI run `37916034316`. Read back latest stable; anonymously download all five ZIPs and unified checksums, verifying exact tested bytes, SHA256, CRC, architecture and retained licenses. The public Windows DLL additionally passes the same 31 native cases locally. No store resubmission, production installation or live-model test calls. See [the publication record](docs/RELEASE-2026-10-09-0.1.1.md).

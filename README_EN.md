@@ -15,14 +15,17 @@ Native CI passed on Windows amd64, Linux amd64/arm64 and macOS amd64/arm64.
 All five ZIPs and the unified checksum file were anonymously downloaded and verified
 byte-for-byte; the public Windows DLL additionally passed 31 offline native cases locally.
 This is **not full CPA/live-model acceptance on every platform**. No production installation
-or store resubmission was performed. See [the publication record](docs/RELEASE-2026-10-09-0.1.1.md)
+was performed. See [the publication record](docs/RELEASE-2026-10-09-0.1.1.md)
 and [the multiplatform workflow](docs/MULTIPLATFORM.md).
 
 The store [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222)
 was closed, unmerged, on October 9 because the old release had only Windows assets.
 The official registry still had no `codexreflow` entry at this documentation check.
-The missing packages now exist, but resubmission requires separate authorization;
-acceptance is not guaranteed.
+After separate authorization, [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225)
+was submitted on October 9. It is **open, unmerged and awaiting maintainer review**, not
+a store listing. It only adds one registry entry, preserving the existing 111 entries.
+All six public release assets were anonymously verified again before resubmission;
+acceptance is not guaranteed. See [the submission record](docs/STORE-SUBMISSION-2026-10-09-0.1.1.md).
 
 The historical Windows amd64 [v0.1.0 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0)
 was published on October 8, 2026. Its ZIP and checksum file were downloaded
@@ -230,12 +233,13 @@ releases or submit store PRs.
 Source-repository creation, package validation, publication and documentation push
 were separately authorized. The five-platform v0.1.1 Release and its public downloads
 are verified; v0.1.0 is preserved. The separately authorized store PR #222 was closed
-for missing platform assets. This documentation update prepares resubmission materials
-but does not submit a PR or change production installation. See the
-[publication record](docs/RELEASE-2026-10-09-0.1.1.md),
+for missing platform assets. The separately authorized resubmission
+[PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) is open and unmerged.
+This documentation update does not submit/comment on a PR or change production installation. See the
+[submission record](docs/STORE-SUBMISSION-2026-10-09-0.1.1.md),
 [release checklist](docs/RELEASING.md) and
-[store submission draft](store/SUBMISSION-DRAFT.md). A formal build must be revalidated
+[store submission materials](store/SUBMISSION-DRAFT.md). A formal build must be revalidated
 after changing its version and repository metadata; development DLL evidence
 must not be relabeled as a formal artifact's evidence.
-Next step: separately authorize store resubmission. Production installation and
+Next step: await maintainer review and address feedback. Production installation and
 live-model tests remain independently authorized actions.
