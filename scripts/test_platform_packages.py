@@ -13,7 +13,7 @@ import warnings
 import zipfile
 
 from assemble_release import assemble, validate_platform
-from package_release import (LICENSE_FILES, NATIVE_CASES, NATIVE_KIND, PLATFORMS,
+from package_release import (LICENSE_FILES, NATIVE_CASE_KEYS, NATIVE_CASES, NATIVE_KIND, PLATFORMS,
                              archive_name, create_archive, host_platform, library_name,
                              source_fingerprint, validate_archive, validate_library,
                              validate_metadata, validate_native_report)
@@ -46,7 +46,8 @@ def library_fixture(goos, goarch):
 def native_fixture(raw):
     return {"test_kind": NATIVE_KIND, "plugin_version": VERSION,
             "plugin_sha256": hashlib.sha256(raw).hexdigest(),
-            "cases": [{"scenario": f"synthetic_case_{i}", "passed": True} for i in range(NATIVE_CASES)]}
+            "cases": [{"scenario": scenario, "passed": True, **({"transport_payload": transport} if transport else {})}
+                      for transport, scenario in sorted(NATIVE_CASE_KEYS)]}
 
 
 def zip_fixture(contents, symlink=None):
@@ -148,6 +149,19 @@ class NativeEvidenceTests(unittest.TestCase):
 
     def test_matching_complete_report(self):
         validate_native_report(self.report, self.raw, VERSION)
+
+    def test_same_scenario_on_distinct_transports_is_valid(self):
+        normals = [case for case in self.report["cases"] if case["scenario"] == "normal"]
+        self.assertEqual({case["transport_payload"] for case in normals}, {"sse", "json", "cpa-lines"})
+        validate_native_report(self.report, self.raw, VERSION)
+
+    def test_unknown_or_repeated_transport_identity_rejected(self):
+        for transport in ("unknown", [], "sse"):
+            changed = copy.deepcopy(self.report)
+            target = next(case for case in changed["cases"] if case.get("transport_payload") == "json" and case["scenario"] == "normal")
+            target["transport_payload"] = transport
+            with self.subTest(transport=transport), self.assertRaises(ValueError):
+                validate_native_report(changed, self.raw, VERSION)
 
     def test_wrong_report_identity_rejected(self):
         for field, value in (("plugin_version", "0.1.0"), ("test_kind", "live acceptance"), ("plugin_sha256", "0" * 64)):

@@ -54,7 +54,7 @@ def validate_platform(directory, version, repository, commit, fingerprint, goos,
             raise ValueError("native report hash mismatch")
         report = json.loads(report_bytes)
         validate_native_report(report, library, version)
-        scenarios.append([case["scenario"] for case in report["cases"]])
+        scenarios.append([(case.get("transport_payload", ""), case["scenario"]) for case in report["cases"]])
     if scenarios[0] != scenarios[1]:
         raise ValueError("packaged native suite differs from the original suite")
     return raw, expected

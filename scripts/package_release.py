@@ -24,7 +24,15 @@ REPOSITORY_PATTERN = r"https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+"
 PLATFORMS = (("darwin", "amd64"), ("darwin", "arm64"), ("linux", "amd64"), ("linux", "arm64"), ("windows", "amd64"))
 LICENSE_FILES = ("LICENSE", "THIRD_PARTY_NOTICES.md", "THIRD_PARTY_LICENSES.txt")
 NATIVE_KIND = "offline C ABI mock host; not live CPA/WebSocket"
-NATIVE_CASES = 31
+NATIVE_CASE_KEYS = frozenset(
+    [(transport, scenario)
+     for transport in ("sse", "json", "cpa-lines")
+     for scenario in ("normal", "continuation", "tool", "cancelled", "eof", "failed", "upstream-incomplete")]
+    + [(transport, "fragmented") for transport in ("sse", "json")]
+    + [(transport, scenario) for transport in ("sse", "json", "cpa-lines") for scenario in ("auto-normal", "auto-516")]
+    + [("", "diagnostic_startup_failure"), ("", "diagnostic_native_lifecycle_failure_and_reused_identifier")]
+)
+NATIVE_CASES = len(NATIVE_CASE_KEYS)
 MAX_LIBRARY_SIZE = 64 * 1024 * 1024
 
 
@@ -111,15 +119,18 @@ def validate_native_report(report, library_bytes, version):
     cases = report.get("cases")
     if not isinstance(cases, list) or len(cases) != NATIVE_CASES:
         raise ValueError("complete native ABI suite required")
-    names = []
+    identities = []
     for case in cases:
         if (not isinstance(case, dict) or case.get("passed") is not True or
                 not isinstance(case.get("scenario"), str) or
                 not re.fullmatch(r"[A-Za-z0-9_.-]{1,128}", case["scenario"])):
             raise ValueError("invalid or unpassed native case")
-        names.append(case["scenario"])
-    if len(set(names)) != len(names):
-        raise ValueError("duplicate native cases are not complete evidence")
+        transport = case.get("transport_payload", "")
+        if not isinstance(transport, str) or transport not in ("", "sse", "json", "cpa-lines"):
+            raise ValueError("invalid native transport identity")
+        identities.append((transport, case["scenario"]))
+    if len(set(identities)) != len(identities) or set(identities) != NATIVE_CASE_KEYS:
+        raise ValueError("native suite must contain exactly all transport/scenario identities")
 
 
 def license_bytes(root):
