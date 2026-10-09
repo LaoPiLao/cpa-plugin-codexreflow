@@ -1,4 +1,4 @@
-# 五平台候选构建与验收
+# 五平台构建、验收与发布边界
 
 ## 目的与授权边界
 
@@ -17,8 +17,15 @@ runner 名称/架构依据 [GitHub 官方列表](https://docs.github.com/en/acti
 核对（2026-10-09）。使用原生 runner，不把交叉编译成功当作可以加载执行。
 工具链固定 Go `1.26.8`，SDK 仍为 CPA `v8.0.13`，运行 Go 实现/策略不变；actions 固定到具体 commit。
 
-`VERSION` 准备为 **`0.1.1`，未发布**。`v0.1.0` ZIP、checksums、标签及此前开发构件保留不动。
-本次授权仅为构建/打包修复及工作分支 CI；不发 Release、不移动标签、不重提商店 PR、不安装或启用生产插件、不调用真实模型。
+**`v0.1.1` 已于 2026-10-09 公开发布**，五个 ZIP 与统一 checksums 均经匿名下载逐字节核验。
+发布来源为 main 提交 `6c71eee479e9939a3d300b9231117fae11eef296` 的
+[原生 CI #37916034316](https://github.com/LaoPiLao/cpa-plugin-codexreflow/actions/runs/37916034316)，
+五个平台及汇总 job 全部成功；公开 Windows DLL 本地另通过同组 31 项离线案例。
+详见 [发布与下载记录](RELEASE-2026-10-09-0.1.1.md)，不是仅据 workflow 声称通过。
+
+构建/打包、main 合并及 Release 分别取得授权；后续文档更新不重提商店、不安装或启用生产插件、不调用真实模型。
+`v0.1.0` / `v0.1.1` 正文、ZIP、checksums、远程标签及此前开发构件保留不动。
+`VERSION` 仍为 `0.1.1`；此后 CI 产生的新候选与已发布字节区分，不能覆盖同名 Release 资产。
 工作流权限为 `contents: read`，仅上传有期限的 CI 候选 artifact，没有自动发布步骤。
 
 ## 每个平台的实际检查
@@ -28,7 +35,7 @@ runner 名称/架构依据 [GitHub 官方列表](https://docs.github.com/en/acti
 1. 确认源码已提交、宿主/Go 架构一致、CGO 开启、Go/SDK 固定。
 2. 对根目录 Go 模块字节快照运行 unit、race、vet 和 15 秒 decoder fuzz，避开 ignored `build` 内的其他项目。
 3. 用明确版本和本项目仓库链接生成 **新的** c-shared 动态库，不覆盖原来的非版本化构建。
-4. 跑全部 Python 回归和实际库的 31 项 C ABI mock-host 测试；核对库哈希及测试版本。
+4. 跑全部 Python 回归（发布源提交为 47 项）和实际库的 31 项 C ABI mock-host 测试；核对库哈希及测试版本。
 5. `package_release.py` 检查 PE/ELF/Mach-O 类型与架构，真实加载并读回插件 ID/版本/仓库；只打包动态库及三个保留许可文件。
 6. 读回 ZIP、CRC、许可字节和原始库字节，只把已验证的根库写入新路径，重跑同一组 31 项原生测试。
 7. 输出同提交/Go 源码指纹/同库的脱敏报告与 validation 记录；不把 raw 日志或配置塞入 ZIP。
@@ -74,14 +81,15 @@ python scripts/assemble_release.py --input-dir .tools/platform-artifacts --outpu
 
 汇总器不执行外平台库；验证的是同次可信 CI 的原生报告，不是密码学证明或全面集成认证。
 要求所有平台使用同一源码提交及根 Go 指纹，检查注册信息、测试完整性、逐个报告/库/ZIP 哈希、许可字节、架构和无额外文件。
-全部通过才生成五个 ZIP、统一五行 SHA256 `checksums.txt` 及独立 `validation-summary.json`；该 JSON 是验收资料，未来不应混入安装 ZIP。
+全部通过才生成五个 ZIP、统一五行 SHA256 `checksums.txt` 及独立 `validation-summary.json`；
+该 JSON 是验收资料，不放入安装 ZIP 或作为本次 Release 的上传资产。
 
 ## 仍需独立验收的边界
 
-- 写好 workflow 或合成格式测试通过不代表五平台已实际构建/加载。必须读回 job 和候选字节记录。
+- 本次五平台已经实际构建/加载并读回 job、候选及公开下载字节；后续每个新构件仍需独立报告，不能只引用本次通过。
 - ABI 通过不替代每个平台的实际 CPA 宿主/HTTP/WS；旧 Windows `v0.1.0` 隔离报告或 dev.5 在线样本不移作 `0.1.1` 新构件证明。
 - 暂不承诺任意 Linux 发行版/glibc、旧 macOS、macOS 签名/公证、所有宿主/客户端/模型或答案质量。
 - 516 不是降智证明；新增构建平台不改变续接成本/隐私或提升质量的保证。
 
-下一步：读回五平台 CI，下载候选并复核；需要实际 CPA 集成时另跑合成隔离宿主测试。
-新版 Release、商店重提及生产试装保持独立授权，不因候选 artifact 成功而自动执行。
+下一步：单独确认商店重提；需要扩大实际 CPA 集成证据时，对新构件另跑合成隔离宿主测试。
+未来新版 Release、商店操作、生产试装及真实模型测试保持独立授权，不因候选 artifact 成功而自动执行。

@@ -2,7 +2,17 @@
 
 ## 正式发布与证据分层
 
-[`v0.1.0`](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 已公开，仅 Windows amd64。
+最新 [`v0.1.1`](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.1) 于 2026-10-09 公开，
+提供 Windows amd64、Linux amd64/arm64、macOS amd64/arm64 包。
+[发布源提交的原生 CI](https://github.com/LaoPiLao/cpa-plugin-codexreflow/actions/runs/37916034316)
+五平台各通过 Go unit/race/vet/fuzz、47 项 Python 回归、原库及包内库各 31 项 C ABI 合成宿主案例；
+同组案例每组共 155 次执行，不是 310 种独立场景。六份公开资产经匿名下载逐字节复核，
+公开 Windows DLL 本地另重跑 31 项原生案例通过。SDK 仍固定 `v8.0.13`，运行实现及策略未变。
+**未安装生产、未新增真实模型测试，也未完成五平台实际 CPA/HTTP/WS 集成验收。**
+Linux 旧 glibc/musl、旧 macOS 及签名/公证未验收；旧 DLL 的隔离/在线证据不转用于新构件。
+见 [v0.1.1 发布与验收](RELEASE-2026-10-09-0.1.1.md)、[五平台流程](MULTIPLATFORM.md)。
+
+历史 [`v0.1.0`](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 仅 Windows amd64，保留不变。
 正式 DLL 独立通过 31 项原生 ABI、19 项 Python 测试，以及 CPA 8.0.13/8.0.15/8.0.16
 各 50 次隔离 HTTP/WS 案例执行；公开 ZIP/校验文件与封存包匿名下载核对一致。
 它没有安装到生产或调用真实模型；下面 dev.5 的在线样本是历史证据，不转为正式 DLL 在线验收。

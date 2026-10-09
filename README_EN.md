@@ -9,30 +9,49 @@ Not an official OpenAI or CLIProxyAPI plugin.
 
 ## Release and validation status
 
-On October 9, the store [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222)
-was closed because Linux/macOS amd64/arm64 binaries were missing. There is no store listing.
-A work branch prepares `0.1.1` five-platform native offline builds and guarded packaging;
-actual remote pass status requires its CI run evidence. No new Release, store resubmission
-or production upgrade is performed. See [the multiplatform workflow](docs/MULTIPLATFORM.md).
+[v0.1.1](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.1)
+was published on October 9, 2026, at 18:43:21 UTC+8 and read back as latest stable.
+Native CI passed on Windows amd64, Linux amd64/arm64 and macOS amd64/arm64.
+All five ZIPs and the unified checksum file were anonymously downloaded and verified
+byte-for-byte; the public Windows DLL additionally passed 31 offline native cases locally.
+This is **not full CPA/live-model acceptance on every platform**. No production installation
+or store resubmission was performed. See [the publication record](docs/RELEASE-2026-10-09-0.1.1.md)
+and [the multiplatform workflow](docs/MULTIPLATFORM.md).
 
-A Windows amd64 [v0.1.0 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0)
+The store [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222)
+was closed, unmerged, on October 9 because the old release had only Windows assets.
+The official registry still had no `codexreflow` entry at this documentation check.
+The missing packages now exist, but resubmission requires separate authorization;
+acceptance is not guaranteed.
+
+The historical Windows amd64 [v0.1.0 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0)
 was published on October 8, 2026. Its ZIP and checksum file were downloaded
 anonymously and verified byte-for-byte against the sealed local package.
-The formal DLL passed local offline ABI and isolated HTTP/WS validation; it has
-not been installed in production or submitted to the store. Historical dev.5
-live samples are not live acceptance of this new DLL. See the
+Its body, tag and assets remain unchanged; it is no longer latest.
+That formal DLL passed local offline ABI and isolated HTTP/WS validation; it has
+not been installed in production. Historical dev.5 live samples are not live
+acceptance of the v0.1.0 DLL or the new v0.1.1 libraries. See the
 [formal-package record](docs/VALIDATION-2026-10-08-0.1.0.md) and
 [publication record](docs/RELEASE-2026-10-08-0.1.0.md).
 
-Download: [Windows amd64 ZIP](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.0/codexreflow_0.1.0_windows_amd64.zip)
-and [checksums.txt](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.0/checksums.txt).
+### Download v0.1.1
+
+| Platform | Installation ZIP |
+|---|---|
+| Windows amd64 | [Download](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/codexreflow_0.1.1_windows_amd64.zip) |
+| Linux amd64 | [Download](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/codexreflow_0.1.1_linux_amd64.zip) |
+| Linux arm64 | [Download](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/codexreflow_0.1.1_linux_arm64.zip) |
+| macOS amd64 (Intel) | [Download](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/codexreflow_0.1.1_darwin_amd64.zip) |
+| macOS arm64 (Apple Silicon) | [Download](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/codexreflow_0.1.1_darwin_arm64.zip) |
+
+Use [checksums.txt](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/checksums.txt).
 Verify SHA256 before installing and preserve the previous plugin/configuration
 for rollback. Publication does not automatically install or enable the plugin.
 
-Previously installed local development build: `0.1.0-dev.5`, installed with authorization on
+The latest recorded authorized deployment was local development build `0.1.0-dev.5` on
 CPA `8.0.16` at 23:38 UTC+8 on October 7, with effective registration read back;
-this publication does not replace it. See [deployment record](docs/DEPLOYMENT-2026-10-07-dev5.md).
-Adds per-run,
+this publication/documentation update does not replace production bytes. See [deployment record](docs/DEPLOYMENT-2026-10-07-dev5.md).
+Dev.5 adds per-run,
 per-round payload-free diagnostics, an offline summary tool and a separate local
 candidate packager. Continuation policy is unchanged. See [diagnostics](docs/DIAGNOSTICS.md)
 and [dev.5 validation](docs/VALIDATION-2026-10-07-dev5.md): 31 native ABI cases,
@@ -77,13 +96,15 @@ See the [October 7 live audit and host regression](docs/VALIDATION-2026-10-07-li
 historical [dev.3 record](docs/VALIDATION-2026-10-05-dev3.md).
 The public source repository is
 [LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow).
-The release tag is fixed to the tested source commit `8758649`; validation and
-publication documents are updated separately on `main`. There is no official
-store listing. The October 8
-bootstrap changes only the Go module identity and repository materials, not the
-SDK or runtime policy. Current source passes local unit/race/vet/fuzz, 31 native
-ABI cases and 19 Python tests. Installed bytes and the previous candidate ZIP
-remain unchanged; their hashes/reports are not evidence for newly built artifacts.
+The `v0.1.1` tag is fixed to tested source `6c71eee`; the old `v0.1.0` stays at
+`8758649`. Documentation is updated separately on `main`, without moving release tags.
+Inherited local same-name tags do not identify Reflow release sources.
+The [released-source five-platform CI](https://github.com/LaoPiLao/cpa-plugin-codexreflow/actions/runs/37916034316)
+passed Go unit/race/vet/fuzz, all 47 Python tests, and 31 native ABI cases on each
+original library and again on its exact packaged bytes. Each group totals 155
+case executions, not 310 distinct scenarios. Go implementation, SDK and policy
+remain unchanged from v0.1.0. Sealed artifacts and historical reports are not
+overwritten or relabeled as evidence for new binaries.
 
 ## Windows development
 
@@ -99,7 +120,10 @@ python scripts/native_smoke.py build/codexreflow.dll
 
 Toolchain downloads are checksum-verified and project-local. No production
 configuration, system PATH, account, credential, or model call is used.
-Only Windows x64 has been locally validated; CI configurations are not results.
+Local development records cover Windows x64. All five release targets have actual
+native CI build/load results using Go `1.26.8`, not just workflow configuration.
+These are not full CPA/HTTP/WS integration results for Linux/macOS. Rebuilding
+requires a matching native host; see [the multiplatform workflow](docs/MULTIPLATFORM.md).
 
 With an existing CPA 8.0.13 executable, run the isolated synthetic integration:
 
@@ -203,13 +227,15 @@ The repository owner is `LaoPiLao`. Existing development metadata uses `local://
 as an explicit local source marker because CPA rejects empty source fields.
 Formal release packaging requires a real GitHub repository. CI cannot publish
 releases or submit store PRs.
-Source-repository creation, formal-package validation and the public Release
-were separately authorized. The Release is published and its public assets
-verified. Store PR #222 was subsequently authorized and submitted, but was closed
-for missing platform assets. A new Release, resubmission and production installation
-remain separately authorized steps. See the
-[publication record](docs/RELEASE-2026-10-08-0.1.0.md),
+Source-repository creation, package validation, publication and documentation push
+were separately authorized. The five-platform v0.1.1 Release and its public downloads
+are verified; v0.1.0 is preserved. The separately authorized store PR #222 was closed
+for missing platform assets. This documentation update prepares resubmission materials
+but does not submit a PR or change production installation. See the
+[publication record](docs/RELEASE-2026-10-09-0.1.1.md),
 [release checklist](docs/RELEASING.md) and
 [store submission draft](store/SUBMISSION-DRAFT.md). A formal build must be revalidated
 after changing its version and repository metadata; development DLL evidence
 must not be relabeled as a formal artifact's evidence.
+Next step: separately authorize store resubmission. Production installation and
+live-model tests remain independently authorized actions.

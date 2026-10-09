@@ -8,9 +8,10 @@ CPA 的 Codex 推理续接与流式兼容插件。基于
 
 ## 当前状态
 
-- 2026-10-09 商店 [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222) 因缺少 Linux/macOS 两种架构的二进制被关闭，尚未上架。工作分支准备 `0.1.1` 五平台离线构建/打包流程，原生 CI 的实际通过状态以对应运行记录为准；**没有发布新 Release、重提商店 PR 或改变生产安装**。见 [五平台流程与边界](docs/MULTIPLATFORM.md)。
-- [`v0.1.0` Windows amd64 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 已于 2026-10-08 公开发布；ZIP 和校验文件通过匿名下载及字节复核。正式包已通过离线/隔离 HTTP/WS 回归，未安装到生产或收录商店；先前 dev.5 的真实样本不移作正式 DLL 在线验收。见 [正式包验收](docs/VALIDATION-2026-10-08-0.1.0.md) 和 [公开发布记录](docs/RELEASE-2026-10-08-0.1.0.md)。
-- 此前已安装开发版：`0.1.0-dev.5`，插件 ID：`codexreflow`；2026-10-07 23:38（UTC+8）经授权安装到 CPA `8.0.16`，本次发布没有替换它。增加按次逐轮脱敏诊断、只读汇总工具和独立的本地候选打包器，不修改续写策略。见 [诊断说明](docs/DIAGNOSTICS.md)、[dev.5 验证记录](docs/VALIDATION-2026-10-07-dev5.md)、[安装记录](docs/DEPLOYMENT-2026-10-07-dev5.md)。
+- [`v0.1.1` 五平台 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.1) 已于 2026-10-09 18:43:21（UTC+8）公开并读回为 latest stable。Windows amd64、Linux amd64/arm64、macOS amd64/arm64 原生 CI 全部通过；五个 ZIP 和统一校验文件均经匿名下载逐字节复核。公开下载的 Windows DLL 另通过 31 项原生离线案例。**未安装到生产、未重提商店，亦非五平台全面 CPA/真实模型验收。** 见 [本次发布记录](docs/RELEASE-2026-10-09-0.1.1.md) 和 [五平台流程与边界](docs/MULTIPLATFORM.md)。
+- 商店 [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222) 因旧版只有 Windows 包于 10 月 9 日关闭、未合并；本次核对官方注册表仍无 `codexreflow`。五平台包已补齐，但重提需要另行确认，不保证收录。
+- 历史 [`v0.1.0` Windows amd64 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 于 2026-10-08 公开，正文/标签/资产保留不变，不再是 latest。其正式包通过离线/隔离 HTTP/WS 回归，未安装到生产；旧证据不移作 `0.1.1` 新构件集成验收。见 [旧正式包验收](docs/VALIDATION-2026-10-08-0.1.0.md) 和 [旧发布记录](docs/RELEASE-2026-10-08-0.1.0.md)。
+- 最近一次已记录的授权部署为开发版 `0.1.0-dev.5`，插件 ID：`codexreflow`；2026-10-07 23:38（UTC+8）安装到 CPA `8.0.16`，本次发布及文档更新不替换生产安装。dev.5 增加按次逐轮脱敏诊断、只读汇总工具和独立的本地候选打包器，不修改续写策略。见 [诊断说明](docs/DIAGNOSTICS.md)、[dev.5 验证记录](docs/VALIDATION-2026-10-07-dev5.md)、[安装记录](docs/DEPLOYMENT-2026-10-07-dev5.md)。
 - 10 月 8 日截至 01:42:48（UTC+8）的只读核对：两个已有会话共 22 条已完成上游记录均为 HTTP 200，16 次处理的客户端合并用量吻合，6 次实际续接（其中 4 次原生 WS 增量路径），两个会话均有完整回答和工具往返记录。全部上游样本使用 WS；不覆盖仍在运行的请求、真实 HTTP/SSE 的全面验收或答案质量。见 [dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md)。
 - SDK 锁定为 CLIProxyAPI `v8.0.13`，无相邻目录 `replace`，不追随宿主最新版本自动构建。
 - SSE / 裸 JSON 共用事件解码和折叠逻辑；对 Responses 客户端声明直接输出格式，避开 CPA 8.0.9+ 的 identity-frame 误过滤路径。
@@ -18,12 +19,23 @@ CPA 的 Codex 推理续接与流式兼容插件。基于
 - 新配置默认自动匹配 GPT-5 及以上的标准文本系列名称，无须维护模型白名单；旧显式白名单仍保持精确匹配。
 - 在 dev.3 的响应 ID 衔接基础上，新增**完整上下文已知时**的原生 WS 增量续写。每种宿主各通过 14 项新增增量、13 项衔接和 23 项自动选择回归；另重现 dev.3 不追加增量思考的行为作为对照。
 - **隔离回归和有限真实样本都不是全面生产认证。** 取消、复杂上下文、重连和质量仍未全面验收；后台会话的 `interrupted` 记录不能单独归因为插件故障。
-- 公开源码仓库：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)。正式发布标签固定到被测源码 `8758649`，验收/发布文档另更新于 `main`；尚未收录官方商店。旧开发 DLL 的 `local://codexreflow` 来源标记不代表正式发布；新正式构件已使用真实仓库来源并独立验收。
-- 10 月 8 日建仓时仅调整 Go 模块归属及仓库资料，SDK 和运行策略未变；当前源码重新通过 unit/race/vet/fuzz、31 项原生 ABI 和 19 项 Python 测试。已安装 DLL 与旧候选 ZIP 均未改，历史报告不能移作新构件的哈希证据。
+- 公开源码仓库：[LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)。`v0.1.1` 固定到被测源码 `6c71eee`，旧 `v0.1.0` 保留在 `8758649`；文档另更新于 `main`，不移动发布标签。正式构件使用真实仓库来源，不能以继承的本地同名标签识别发布源码。
+- [发布源提交的五平台 CI](https://github.com/LaoPiLao/cpa-plugin-codexreflow/actions/runs/37916034316) 各通过 unit/race/vet/fuzz、47 项 Python 测试、原库及包内库各 31 项原生 ABI；两组各 155 次案例执行不是 310 种独立场景。运行 Go 实现、SDK 和策略相对 `v0.1.0` 不变；已封存构件及历史报告不覆盖、不改名复用。
 
-下载：[Windows amd64 ZIP](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.0/codexreflow_0.1.0_windows_amd64.zip) · [checksums.txt](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.0/checksums.txt)。下载后核对 SHA256，保留旧插件及配置以便回滚；本次发布不会自动安装或启用。
+### 下载 v0.1.1
 
-验证详情：[正式包验收](docs/VALIDATION-2026-10-08-0.1.0.md) · [公开发布记录](docs/RELEASE-2026-10-08-0.1.0.md) · [dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md) · [dev.5 隔离回归](docs/VALIDATION-2026-10-07-dev5.md)。历史记录：[dev.4 真实增量续写与 CPA 8.0.16](docs/VALIDATION-2026-10-07-live-dev4.md) · [WS 增量续写与授权部署](docs/VALIDATION-2026-10-05-dev4.md) · [WS 衔接与诊断](docs/VALIDATION-2026-10-05-dev3.md) · [默认自动匹配](docs/VALIDATION-2026-10-05-dev2.md) · [断流修补](docs/VALIDATION-2026-10-05-dev1.md) · [首轮历史记录](docs/VALIDATION-2026-10-05.md)。
+| 平台 | 安装 ZIP |
+|---|---|
+| Windows amd64 | [下载](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/codexreflow_0.1.1_windows_amd64.zip) |
+| Linux amd64 | [下载](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/codexreflow_0.1.1_linux_amd64.zip) |
+| Linux arm64 | [下载](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/codexreflow_0.1.1_linux_arm64.zip) |
+| macOS amd64（Intel） | [下载](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/codexreflow_0.1.1_darwin_amd64.zip) |
+| macOS arm64（Apple Silicon） | [下载](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/codexreflow_0.1.1_darwin_arm64.zip) |
+
+下载后对照 [checksums.txt](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/download/v0.1.1/checksums.txt)
+核对 SHA256，保留旧插件及配置以便回滚；公开发布不会自动安装或启用。
+
+验证详情：[v0.1.1 五平台发布与下载](docs/RELEASE-2026-10-09-0.1.1.md) · [五平台流程](docs/MULTIPLATFORM.md)。历史证据：[v0.1.0 正式包验收](docs/VALIDATION-2026-10-08-0.1.0.md) · [v0.1.0 发布记录](docs/RELEASE-2026-10-08-0.1.0.md) · [dev.5 有限真实核对](docs/VALIDATION-2026-10-08-live-dev5.md) · [dev.5 隔离回归](docs/VALIDATION-2026-10-07-dev5.md) · [dev.4 真实增量续写与 CPA 8.0.16](docs/VALIDATION-2026-10-07-live-dev4.md) · [WS 增量续写与授权部署](docs/VALIDATION-2026-10-05-dev4.md) · [WS 衔接与诊断](docs/VALIDATION-2026-10-05-dev3.md) · [默认自动匹配](docs/VALIDATION-2026-10-05-dev2.md) · [断流修补](docs/VALIDATION-2026-10-05-dev1.md) · [首轮历史记录](docs/VALIDATION-2026-10-05.md)。
 
 ## 功能与边界
 
@@ -87,7 +99,9 @@ python scripts/ws_incremental_fold_smoke.py --cpa <CPA可执行文件> --dll bui
 不等同于实际工具执行、真实模型或 Desktop 验收。固定 CPA 配置重载会关闭上游执行会话，
 即使插件关闭也如此；这不是无缝热重载，客户端须以新连接及完整输入恢复。
 
-Linux/macOS 有 Go 1.26+ 和 C 编译器时可运行 `go test ./...`；当前只实际验证本地 Windows x64。
+五平台正式包在原生 CI 上使用 Go `1.26.8` 构建并实际加载测试；本地开发记录为 Windows x64。
+这些原生 ABI 结果不替代 Linux/macOS 实际 CPA/HTTP/WS 集成；重建需选择匹配架构的宿主，
+完整命令和限制见 [五平台流程](docs/MULTIPLATFORM.md)。
 
 ## 默认使用：不需要手写模型列表
 
@@ -169,11 +183,12 @@ dev.5 另记录同一 `run_id` 的 `fold_started` 和每轮 `round_finished`，�
 
 ## 发布与商店
 
-仓库归属、Go 模块路径和商店草稿已使用本项目的真实 URL。建仓、正式包验收和公开 Release 分别取得授权；
-`v0.1.0` 已发布并完成公开下载复核，随后另获授权提交商店 PR #222，但已因平台资产不足被关闭。
-五平台构建/验证是新的工作分支步骤；发布新版本、重提商店 PR 和生产安装仍需分别确认。
-见 [发布记录](docs/RELEASE-2026-10-08-0.1.0.md)、[发布清单](docs/RELEASING.md) 和 [商店提交草稿](store/SUBMISSION-DRAFT.md)。
-CI 只测试和上传开发构件，不自动创建 GitHub Release、发 PR 或上架。
+仓库归属、Go 模块路径和商店草稿使用本项目真实 URL。建仓、正式包验收、发布及文档推送分别获授权；
+`v0.1.1` 五平台 Release 已发布并完成公开下载复核，旧版 `v0.1.0` 保留不变。
+首个商店 PR #222 已关闭；本次只更新重提材料，不提交 PR，不改变生产安装。
+见 [本次发布记录](docs/RELEASE-2026-10-09-0.1.1.md)、[发布清单](docs/RELEASING.md) 和 [商店提交草稿](store/SUBMISSION-DRAFT.md)。
+CI 只有读取仓库的权限，只生成候选构件，不自动创建 Release、移动标签、发 PR 或上架。
+下一步建议单独确认商店重提；生产试装和真实模型测试仍保持独立授权。
 
 ## 来源与许可证
 

@@ -1,11 +1,12 @@
 # Changelog
 
-## 0.1.1 (unreleased; five-platform packaging work)
+## 0.1.1 (2026-10-09)
 
-- Address the missing-platform feedback in store PR #222 / project issue #1 without changing Go implementation, SDK pin, continuation policy or production configuration. Preserve the sealed `v0.1.0` Release and inherited tags; deliberately prepare a separate `0.1.1` package version, not an overwrite.
+- Publish the separately authorized five-platform Release from tested main source `6c71eee479e9939a3d300b9231117fae11eef296` and CI run `37916034316`. Read back latest stable; anonymously download all five ZIPs and unified checksums, verifying exact tested bytes, SHA256, CRC, architecture and retained licenses. The public Windows DLL additionally passes the same 31 native cases locally. No store resubmission, production installation or live-model test calls. See [the publication record](docs/RELEASE-2026-10-09-0.1.1.md).
+- Address the missing-platform feedback in store PR #222 / project issue #1 without changing Go implementation, SDK pin, continuation policy or production configuration. Preserve the sealed `v0.1.0` Release and inherited tags; publish a separate `0.1.1` package version, not an overwrite.
 - Add native CI for Windows amd64, Linux amd64/arm64 and Darwin amd64/arm64 using pinned Go and action revisions. On each target run unit/race/vet/fuzz, Python tests, actual C ABI tests and the same suite against packaged library bytes. CI has read-only repository permissions and uploads candidate artifacts only.
 - Extend the release packager with PE/ELF/Mach-O type/architecture checks, native identity/report guards, exact root/license layout and immutable outputs. Collect exactly five same-commit, same-source packages with verified reports/checksums; fail on missing targets, mismatched provenance, unpassed cases or additional files.
-- Add synthetic container/provenance regression tests. Native mock tests are not full CPA integration or live-model acceptance; remote CI results must be read back before reporting platform validation.
+- Add synthetic container/provenance regression tests. The released-source CI passes all 47 Python tests and 31 native cases on each original and packaged library: 155 case executions per group, not 310 distinct scenarios. Native mock tests are not full CPA integration or live-model acceptance on every platform.
 
 ## 0.1.0 (2026-10-08)
 
