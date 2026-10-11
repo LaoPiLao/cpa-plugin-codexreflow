@@ -18,6 +18,14 @@ This is **not full CPA/live-model acceptance on every platform**. No production 
 was performed. See [the publication record](docs/RELEASE-2026-10-09-0.1.1.md)
 and [the multiplatform workflow](docs/MULTIPLATFORM.md).
 
+On October 11, the exact published v0.1.1 Windows DLL also satisfied all assertions
+in 50 synthetic isolated HTTP/WS scenario executions on each of CPA 8.0.13, 8.0.15
+and 8.0.16, totaling 150 executions, plus another 31-case native ABI run.
+The reports and hashes were read back on October 12. No rebuild, production changes
+or real-model calls were involved. These are repeated suites, not 150 distinct
+scenarios or Linux/macOS CPA integration or answer-quality acceptance. See
+[the Windows formal-package validation](docs/VALIDATION-2026-10-12-0.1.1.md).
+
 The store [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222)
 was closed, unmerged, on October 9 because the old release had only Windows assets.
 After separate authorization, [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225)
@@ -243,5 +251,5 @@ This documentation update does not submit/comment on a PR or change production i
 [store submission materials](store/SUBMISSION-DRAFT.md). A formal build must be revalidated
 after changing its version and repository metadata; development DLL evidence
 must not be relabeled as a formal artifact's evidence.
-Next step: test the exact published v0.1.1 bytes against isolated CPA HTTP/WS synthetic upstreams. Production installation and
+Next step: inspect the current CPA installation version and desktop store visibility read-only. Production installation and
 live-model tests remain independently authorized actions.

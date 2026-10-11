@@ -9,6 +9,7 @@ CPA 的 Codex 推理续接与流式兼容插件。基于
 ## 当前状态
 
 - [`v0.1.1` 五平台 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.1) 已于 2026-10-09 18:43:21（UTC+8）公开并读回为 latest stable。Windows amd64、Linux amd64/arm64、macOS amd64/arm64 原生 CI 全部通过；五个 ZIP 和统一校验文件均经匿名下载逐字节复核。公开下载的 Windows DLL 另通过 31 项原生离线案例。**未安装到生产，亦非五平台全面 CPA/真实模型验收。** 见 [本次发布记录](docs/RELEASE-2026-10-09-0.1.1.md) 和 [五平台流程与边界](docs/MULTIPLATFORM.md)。
+- 10 月 11 日，同一公开 `v0.1.1` Windows ZIP 内的 DLL 另完成 CPA `8.0.13` / `8.0.15` / `8.0.16` 各 50 次合成隔离 HTTP/WS 用例执行，共 150 次全部符合断言，另重跑 31 项原生 ABI；10 月 12 日读回报告及哈希。没有重新编译、改生产或调用真实模型；不是 150 种独立场景，也不扩展为 Linux/macOS CPA 集成或答案质量认证。见 [正式包 Windows 隔离验收](docs/VALIDATION-2026-10-12-0.1.1.md)。
 - 商店 [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) 已于 **2026-10-10 06:06:14（UTC+8）合并，官方注册表已收录**；10 月 11 日读回唯一的 `codexreflow` 条目，与提交模板一致。PR 只新增一个注册条目，保留原有 111 个条目；重提前五平台资产再次匿名下载复核通过。旧 [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222) 保持关闭、未合并。**收录不等于本机升级、客户端商店 UI 已验收或答案质量保证。** 见 [收录核对记录](docs/STORE-LISTING-2026-10-11.md)；[重提记录](docs/STORE-SUBMISSION-2026-10-09-0.1.1.md)保留提交当时状态。
 - 历史 [`v0.1.0` Windows amd64 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 于 2026-10-08 公开，正文/标签/资产保留不变，不再是 latest。其正式包通过离线/隔离 HTTP/WS 回归，未安装到生产；旧证据不移作 `0.1.1` 新构件集成验收。见 [旧正式包验收](docs/VALIDATION-2026-10-08-0.1.0.md) 和 [旧发布记录](docs/RELEASE-2026-10-08-0.1.0.md)。
 - 最近一次已记录的授权部署为开发版 `0.1.0-dev.5`，插件 ID：`codexreflow`；2026-10-07 23:38（UTC+8）安装到 CPA `8.0.16`，本次发布及文档更新不替换生产安装。dev.5 增加按次逐轮脱敏诊断、只读汇总工具和独立的本地候选打包器，不修改续写策略。见 [诊断说明](docs/DIAGNOSTICS.md)、[dev.5 验证记录](docs/VALIDATION-2026-10-07-dev5.md)、[安装记录](docs/DEPLOYMENT-2026-10-07-dev5.md)。
@@ -188,7 +189,7 @@ dev.5 另记录同一 `run_id` 的 `fold_started` 和每轮 `round_finished`，�
 首个商店 PR #222 已关闭；随后独立获授权重提的 [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) 已合并，官方注册表已读回收录。
 本次同步收录文档，不再提交/评论 PR，不改变生产安装。见 [收录核对记录](docs/STORE-LISTING-2026-10-11.md)、[发布清单](docs/RELEASING.md) 和 [商店提交材料](store/SUBMISSION-DRAFT.md)。
 CI 只有读取仓库的权限，只生成候选构件，不自动创建 Release、移动标签、发 PR 或上架。
-下一步对已发布的 `v0.1.1` 字节做合成隔离 CPA HTTP/WS 回归；生产试装和真实模型测试仍保持独立授权。
+Windows 正式包隔离证据已补齐；下一步只读核对现有 CPA 的安装版本和商店显示情况，生产试装和真实模型测试仍保持独立授权。
 
 ## 来源与许可证
 

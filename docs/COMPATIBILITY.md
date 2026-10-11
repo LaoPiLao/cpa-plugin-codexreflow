@@ -12,6 +12,15 @@
 Linux 旧 glibc/musl、旧 macOS 及签名/公证未验收；旧 DLL 的隔离/在线证据不转用于新构件。
 见 [v0.1.1 发布与验收](RELEASE-2026-10-09-0.1.1.md)、[五平台流程](MULTIPLATFORM.md)。
 
+`v0.1.1` Windows 正式 ZIP 内的同一 DLL 随后于 10 月 11 日通过独立隔离集成：
+CPA `8.0.13` / `8.0.15` / `8.0.16` 各 50 次 HTTP/WS 合成用例执行，共 150 次全部符合断言，
+另重跑 31 项原生 ABI；10 月 12 日读回构件、宿主和报告哈希。
+没有重新编译或替换发布资产；这组新构件证据不借用旧 DLL 的测试结果。
+首次临时目录保护检查拦下的是 Windows 宿主影子 DLL 副本，不是 14 项 WS 用例失败；
+保存首次报告，修正 ignored 验收运行器的安全清理规则后在新目录完整重跑。
+详见 [Windows 正式包隔离验收](VALIDATION-2026-10-12-0.1.1.md)。
+该证据仍仅是 Windows 固定宿主和模拟上游，不是五平台全面集成、生产安装、真实模型或质量认证。
+
 历史 [`v0.1.0`](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0) 仅 Windows amd64，保留不变。
 正式 DLL 独立通过 31 项原生 ABI、19 项 Python 测试，以及 CPA 8.0.13/8.0.15/8.0.16
 各 50 次隔离 HTTP/WS 案例执行；公开 ZIP/校验文件与封存包匿名下载核对一致。

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-11 Windows isolated validation (documented 2026-10-12; no new binary release)
+
+- Validate the exact published v0.1.1 Windows ZIP/DLL bytes without rebuilding. The DLL passes 31 native ABI cases and 50 synthetic isolated HTTP/WS scenario executions on each pinned CPA 8.0.13/8.0.15/8.0.16 host, totaling 150 executions rather than 150 distinct scenarios. Read back report and host hashes; see [the independent validation record](docs/VALIDATION-2026-10-12-0.1.1.md).
+- Preserve the initial orchestration safety stop: its 14 WS cases passed, but an overstrict empty-temp guard rejected Windows host shadow DLL residue. Update only the ignored test runner to verify stopped PIDs, owned paths and identical DLL hashes before removing individual copies; retain initial logs and rerun the full suite in a new output directory. No plugin/SDK/host implementation change.
+- No production installation/configuration changes, real-model calls, Release/tag changes or additional store PR. Linux/macOS full CPA integration, real clients and answer quality remain unvalidated.
+
 ## 2026-10-10 store listing (verified 2026-10-11; no new binary release)
 
 - [Store PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) was merged at 06:06:14 UTC+8. Read back its merge commit on official main and exactly one `codexreflow` registry entry matching the submitted template. Preserve the earlier submission/publication records as historical snapshots; see [the listing verification](docs/STORE-LISTING-2026-10-11.md).

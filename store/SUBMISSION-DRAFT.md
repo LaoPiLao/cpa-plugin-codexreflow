@@ -65,6 +65,11 @@ remain in the author's repository. Upstream licenses and attribution are retaine
 
 ## 已完成检查与审核待办
 
+提交后的独立证据：10 月 11 日，同一 `v0.1.1` Windows 正式 DLL 完成三个固定 CPA 宿主共 150 次
+合成隔离 HTTP/WS 用例执行及 31 项原生 ABI；10 月 12 日读回哈希。
+见 [正式 Windows 包隔离验收](../docs/VALIDATION-2026-10-12-0.1.1.md)。这是后续独立记录，
+不修改已提交 PR 正文、Release 资产/说明或历史报告；不扩大为五平台实际集成或真实模型认证。
+
 - [x] 首次 PR #222 经授权提交，但因缺少平台资产被关闭。
 - [x] 新版五平台 Release 独立获授权，已发布并验收；不是从工作分支/CI 授权推定。
 - [x] 商店重提独立获授权，PR #225 已创建并读回；没有把发布或文档推送授权当作重提授权。
@@ -80,4 +85,4 @@ remain in the author's repository. Upstream licenses and attribution are retaine
 核对依据（10 月 8 日首发、10 月 9 日重提再次复核）：[官方商店说明](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store#adding-a-plugin)、
 [官方注册表](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/blob/main/registry.json)。任何未来提交仍需当日重查。
 
-推荐下一步：对已发布 `v0.1.1` 字节做合成隔离 CPA HTTP/WS 回归，不改生产配置。
+推荐下一步：只读核对实际安装版本和商店显示；不因已收录或隔离通过自动修改生产配置。

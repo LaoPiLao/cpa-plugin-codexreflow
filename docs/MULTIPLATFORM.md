@@ -23,6 +23,11 @@ runner 名称/架构依据 [GitHub 官方列表](https://docs.github.com/en/acti
 五个平台及汇总 job 全部成功；公开 Windows DLL 本地另通过同组 31 项离线案例。
 详见 [发布与下载记录](RELEASE-2026-10-09-0.1.1.md)，不是仅据 workflow 声称通过。
 
+10 月 11 日对正式 Windows ZIP 内的同一 DLL 另完成固定 CPA `8.0.13` / `8.0.15` / `8.0.16`
+各 50 次合成隔离 HTTP/WS 用例执行及 31 项原生 ABI；10 月 12 日核对同字节和报告哈希。
+见 [Windows 正式包隔离验收](VALIDATION-2026-10-12-0.1.1.md)。这是新增的 Windows 集成层证据，
+不是 Linux/macOS CPA 集成或五平台全面真实模型验收，也没有重新构建/上传正式资产。
+
 构建/打包、main 合并、Release 和商店重提分别取得授权；
 [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) 已于 10 月 10 日合并，10 月 11 日读回官方注册表已收录。
 见 [收录核对记录](STORE-LISTING-2026-10-11.md)及历史[商店重提记录](STORE-SUBMISSION-2026-10-09-0.1.1.md)。本次同步文档，不另发/评论 PR、不安装或启用生产插件、不调用真实模型。
@@ -93,5 +98,5 @@ python scripts/assemble_release.py --input-dir .tools/platform-artifacts --outpu
 - 暂不承诺任意 Linux 发行版/glibc、旧 macOS、macOS 签名/公证、所有宿主/客户端/模型或答案质量。
 - 516 不是降智证明；新增构建平台不改变续接成本/隐私或提升质量的保证。
 
-下一步：对已发布的 `v0.1.1` 字节另跑合成隔离 CPA HTTP/WS 回归，扩大同构件集成证据；不从商店收录推定生产升级。
+Windows 同构件隔离证据已补齐；下一步只读核对实际安装版本及商店显示，不从收录或模拟上游通过推定生产升级。
 未来新版 Release、商店操作、生产试装及真实模型测试保持独立授权，不因候选 artifact 成功而自动执行。
