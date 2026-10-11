@@ -1,14 +1,14 @@
 # 商店提交材料与状态 — CodexReflow
 
-**五平台 Release 已发布；[PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) 已重提，当前开放、未合并、待审核，尚未上架。**
+**五平台 Release 已发布；[PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) 已于 2026-10-10 06:06:14（UTC+8）合并，10 月 11 日读回官方注册表已收录。**
 公开仓库为 `LaoPiLao/cpa-plugin-codexreflow`；建仓、构建/验收、main 合并、公开 Release
 与文档推送分别经授权完成。`v0.1.1` 已于 2026-10-09 发布并读回为 latest stable，
 五个 ZIP 及统一校验文件均经匿名下载核验。
 首次商店 [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222) 经独立授权提交，
 10 月 9 日关闭、未合并：[审核反馈](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222#issuecomment-6069997676)要求补齐五平台。
 随后独立获授权，10 月 9 日 19:44:58（UTC+8）创建 PR #225，只新增一条注册信息，保留原有 111 条及 schema。
-本次文档核对时官方注册表仍无 `codexreflow`；这里只同步已提交状态，**不另发 PR、评论或重新打开旧 PR**。
-收录由维护者决定，`CLEAN` 不等于审核通过。见 [商店重提记录](../docs/STORE-SUBMISSION-2026-10-09-0.1.1.md)、[本次发布证据](../docs/RELEASE-2026-10-09-0.1.1.md)
+本次官方注册表读回唯一的 `codexreflow` 条目，与提交模板一致；这里只同步收录状态，**不另发 PR、评论或重新打开旧 PR**。
+收录依据是已合并 PR 和官方条目，不是此前的 `CLEAN`；不等于生产升级或客户端 UI 验收。见 [收录核对记录](../docs/STORE-LISTING-2026-10-11.md)、历史[商店重提记录](../docs/STORE-SUBMISSION-2026-10-09-0.1.1.md)、[本次发布证据](../docs/RELEASE-2026-10-09-0.1.1.md)
 及 [五平台说明](../docs/MULTIPLATFORM.md)；[旧版发布记录](../docs/RELEASE-2026-10-08-0.1.0.md)仅作历史参考。
 
 ## 注册表条目
@@ -25,7 +25,7 @@
 
 ## v0.1.1 重提材料摘要（已提交）
 
-> 实际正文以 [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) 为准，以下留作提交材料摘要，不用于创建重复 PR。已提交不等于已合并或收录。
+> 实际正文以 [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) 为准，以下留作提交材料摘要，不用于创建重复 PR。本项目已读回合并和收录，但收录不是生产安装或全平台集成验收。
 
 - Repository: [LaoPiLao/cpa-plugin-codexreflow](https://github.com/LaoPiLao/cpa-plugin-codexreflow)
 - Latest release: [v0.1.1](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.1)
@@ -75,9 +75,9 @@ remain in the author's repository. Upstream licenses and attribution are retaine
 - [x] 新正式构件完成五平台原生 ABI 与包内字节回归；公开 Windows 字节再验收，不挪用开发 DLL 或旧 v0.1.0 的隔离报告。
 - [x] 重提时 ID 唯一，原有 111 条及 schema 保留；PR 只有 `registry.json` 的 10 行新增，不含原始日志、账号、构件或无关文件。
 - [x] 草稿明确五平台实际 CPA/HTTP/WS 与真实模型未全面验收，声明不超出证据；商店是否收录由维护者审核。
-- [ ] 维护者审核、合并及官方注册表收录未完成；当前开放状态与无冲突状态不代替审核结果。
+- [x] 维护者已合并 PR #225，官方注册表中本项目条目唯一且与提交模板一致；不以此前开放或无冲突状态代替实际合并结果。
 
 核对依据（10 月 8 日首发、10 月 9 日重提再次复核）：[官方商店说明](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store#adding-a-plugin)、
 [官方注册表](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/blob/main/registry.json)。任何未来提交仍需当日重查。
 
-推荐下一步：等待维护者审核，再按反馈处理；合并后读回官方注册表，不改生产配置。
+推荐下一步：对已发布 `v0.1.1` 字节做合成隔离 CPA HTTP/WS 回归，不改生产配置。

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-10 store listing (verified 2026-10-11; no new binary release)
+
+- [Store PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) was merged at 06:06:14 UTC+8. Read back its merge commit on official main and exactly one `codexreflow` registry entry matching the submitted template. Preserve the earlier submission/publication records as historical snapshots; see [the listing verification](docs/STORE-LISTING-2026-10-11.md).
+- Synchronize current documentation only. Do not change plugin implementation, SDK, version, Release tags/assets or production installation; store registration is not desktop UI, live-model or answer-quality acceptance.
+
 ## 2026-10-09 store resubmission (no new binary release)
 
 - With separate authorization, submit [store PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) after the closed #222: append one `codexreflow` entry to `registry.json`, preserving all 111 existing entries and schema metadata. Keep the old PR/branch and fork main unchanged. Read back the new PR as open, unmerged and registry-only; this is not store acceptance.

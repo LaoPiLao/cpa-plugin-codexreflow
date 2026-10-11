@@ -24,8 +24,8 @@ runner 名称/架构依据 [GitHub 官方列表](https://docs.github.com/en/acti
 详见 [发布与下载记录](RELEASE-2026-10-09-0.1.1.md)，不是仅据 workflow 声称通过。
 
 构建/打包、main 合并、Release 和商店重提分别取得授权；
-[PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) 已重提，当前开放、未合并、待审核。
-见 [商店重提记录](STORE-SUBMISSION-2026-10-09-0.1.1.md)。本次仅同步文档，不另发/评论 PR、不安装或启用生产插件、不调用真实模型。
+[PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) 已于 10 月 10 日合并，10 月 11 日读回官方注册表已收录。
+见 [收录核对记录](STORE-LISTING-2026-10-11.md)及历史[商店重提记录](STORE-SUBMISSION-2026-10-09-0.1.1.md)。本次同步文档，不另发/评论 PR、不安装或启用生产插件、不调用真实模型。
 `v0.1.0` / `v0.1.1` 正文、ZIP、checksums、远程标签及此前开发构件保留不动。
 `VERSION` 仍为 `0.1.1`；此后 CI 产生的新候选与已发布字节区分，不能覆盖同名 Release 资产。
 工作流权限为 `contents: read`，仅上传有期限的 CI 候选 artifact，没有自动发布步骤。
@@ -93,5 +93,5 @@ python scripts/assemble_release.py --input-dir .tools/platform-artifacts --outpu
 - 暂不承诺任意 Linux 发行版/glibc、旧 macOS、macOS 签名/公证、所有宿主/客户端/模型或答案质量。
 - 516 不是降智证明；新增构建平台不改变续接成本/隐私或提升质量的保证。
 
-下一步：等待商店维护者审核；需要扩大实际 CPA 集成证据时，对新构件另跑合成隔离宿主测试。
+下一步：对已发布的 `v0.1.1` 字节另跑合成隔离 CPA HTTP/WS 回归，扩大同构件集成证据；不从商店收录推定生产升级。
 未来新版 Release、商店操作、生产试装及真实模型测试保持独立授权，不因候选 artifact 成功而自动执行。

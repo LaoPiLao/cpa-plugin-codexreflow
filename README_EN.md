@@ -20,12 +20,14 @@ and [the multiplatform workflow](docs/MULTIPLATFORM.md).
 
 The store [PR #222](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/222)
 was closed, unmerged, on October 9 because the old release had only Windows assets.
-The official registry still had no `codexreflow` entry at this documentation check.
 After separate authorization, [PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225)
-was submitted on October 9. It is **open, unmerged and awaiting maintainer review**, not
-a store listing. It only adds one registry entry, preserving the existing 111 entries.
+was submitted on October 9 and **merged on October 10, 2026 at 06:06:14 UTC+8**.
+On October 11, the official registry contained exactly one `codexreflow` entry,
+matching the submitted template. The PR only added one registry entry, preserving the existing 111 entries.
 All six public release assets were anonymously verified again before resubmission;
-acceptance is not guaranteed. See [the submission record](docs/STORE-SUBMISSION-2026-10-09-0.1.1.md).
+listing does not mean a local production upgrade, verified desktop store UI or guaranteed answer quality.
+See [the listing verification](docs/STORE-LISTING-2026-10-11.md).
+The [submission record](docs/STORE-SUBMISSION-2026-10-09-0.1.1.md) preserves the earlier submission-time state.
 
 The historical Windows amd64 [v0.1.0 Release](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.0)
 was published on October 8, 2026. Its ZIP and checksum file were downloaded
@@ -234,12 +236,12 @@ Source-repository creation, package validation, publication and documentation pu
 were separately authorized. The five-platform v0.1.1 Release and its public downloads
 are verified; v0.1.0 is preserved. The separately authorized store PR #222 was closed
 for missing platform assets. The separately authorized resubmission
-[PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) is open and unmerged.
+[PR #225](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/225) is merged and its entry is present in the official registry.
 This documentation update does not submit/comment on a PR or change production installation. See the
-[submission record](docs/STORE-SUBMISSION-2026-10-09-0.1.1.md),
+[listing verification](docs/STORE-LISTING-2026-10-11.md),
 [release checklist](docs/RELEASING.md) and
 [store submission materials](store/SUBMISSION-DRAFT.md). A formal build must be revalidated
 after changing its version and repository metadata; development DLL evidence
 must not be relabeled as a formal artifact's evidence.
-Next step: await maintainer review and address feedback. Production installation and
+Next step: test the exact published v0.1.1 bytes against isolated CPA HTTP/WS synthetic upstreams. Production installation and
 live-model tests remain independently authorized actions.
