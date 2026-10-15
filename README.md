@@ -4,6 +4,8 @@
 
 CodexReflow 是一个 [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI)（CPA）插件。当 GPT 的一次推理疑似提前结束时，插件会在满足条件的情况下继续请求模型，把多轮结果合并后返回客户端。适合已经通过 CPA 使用 Codex 或其他兼容客户端的用户。
 
+**项目来源：** 基于 [uf-hy / CPA CodexComp v0.1.7](https://github.com/uf-hy/cpa-plugin-codexcomp/tree/v0.1.7) 独立维护，并沿用其中源自 [dzshzx / codexcomp](https://github.com/dzshzx/codexcomp) 和 [neteroster / CodexCont](https://github.com/neteroster/CodexCont) 的算法与续接机制。
+
 [English](README_EN.md) · [下载 v0.1.1](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.1) · [反馈问题](https://github.com/LaoPiLao/cpa-plugin-codexreflow/issues/new?template=bug_report.md)
 
 ## 它能做什么
@@ -98,8 +100,14 @@ CPA 和其他插件的日志由各自的设置决定。缓存范围、容量和�
 - [兼容性与测试记录](docs/COMPATIBILITY.md)：已经验证的范围和已知限制。
 - [开发指南](CONTRIBUTING.md) · [五平台构建](docs/MULTIPLATFORM.md) · [发布流程](docs/RELEASING.md) · [更新记录](CHANGELOG.md)。
 
-## 来源与许可证
+## 来源、致谢与许可证
 
-本项目基于 [uf-hy / CodexComp v0.1.7](https://github.com/uf-hy/cpa-plugin-codexcomp/tree/v0.1.7) 独立维护，保留上游版权及 CodexCont 相关声明。它不是 OpenAI 或 CLIProxyAPI 官方插件。
+CodexReflow 建立在以下项目的工作之上：
 
-采用 [MIT 许可证](LICENSE)。第三方来源见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 和 [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt)。
+- **直接上游：[uf-hy / CPA CodexComp v0.1.7](https://github.com/uf-hy/cpa-plugin-codexcomp/tree/v0.1.7)**。本项目从这个 CPA 插件分支而来，继承其插件接入、配置、路由及 Go 版续接实现。
+- **算法来源：[dzshzx / codexcomp](https://github.com/dzshzx/codexcomp)**。上游的 Go 版结果合并与续接算法移植自该项目的 `fold.py`。
+- **机制来源：[neteroster / CodexCont](https://github.com/neteroster/CodexCont)**。提供最初的 `518n−2` 截断识别规则和加密推理状态重放方案。
+
+感谢这些项目及其作者。CodexReflow 在此基础上改进 HTTP/SSE/WebSocket 兼容、自动模型匹配和运行诊断，并独立维护。它不是 OpenAI 或 CLIProxyAPI 官方插件。
+
+本项目采用 [MIT 许可证](LICENSE)，保留原作者版权和许可声明。完整来源及第三方许可见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 和 [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt)。

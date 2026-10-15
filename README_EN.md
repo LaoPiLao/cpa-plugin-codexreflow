@@ -4,6 +4,8 @@
 
 CodexReflow is a plugin for [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI) (CPA). When a response meets its reasoning-truncation rules, it requests another round and merges the results for the client. It is intended for people already using Codex or another compatible client through CPA.
 
+**Project origins:** An independently maintained fork of [uf-hy / CPA CodexComp v0.1.7](https://github.com/uf-hy/cpa-plugin-codexcomp/tree/v0.1.7), retaining the algorithms and continuation mechanism derived through that project from [dzshzx / codexcomp](https://github.com/dzshzx/codexcomp) and [neteroster / CodexCont](https://github.com/neteroster/CodexCont).
+
 [简体中文](README.md) · [Download v0.1.1](https://github.com/LaoPiLao/cpa-plugin-codexreflow/releases/tag/v0.1.1) · [Report a problem](https://github.com/LaoPiLao/cpa-plugin-codexreflow/issues/new?template=bug_report.md)
 
 ## What it does
@@ -100,8 +102,14 @@ The configuration, diagnostics and development guides are currently in Chinese:
 - [Compatibility and validation](docs/COMPATIBILITY.md): tested coverage and known limitations.
 - [Development](CONTRIBUTING.md) · [Multiplatform builds](docs/MULTIPLATFORM.md) · [Release process](docs/RELEASING.md) · [Changelog](CHANGELOG.md).
 
-## Attribution and license
+## Attribution, acknowledgments and license
 
-CodexReflow is an independently maintained fork of [uf-hy / CodexComp v0.1.7](https://github.com/uf-hy/cpa-plugin-codexcomp/tree/v0.1.7). It retains the upstream copyright and CodexCont-related notices. It is not an official OpenAI or CLIProxyAPI plugin.
+CodexReflow builds on the work of these projects:
 
-Licensed under [MIT](LICENSE). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt) for third-party attribution.
+- **Direct upstream: [uf-hy / CPA CodexComp v0.1.7](https://github.com/uf-hy/cpa-plugin-codexcomp/tree/v0.1.7).** This project forks that CPA plugin, inheriting its plugin integration, configuration, routing and Go continuation implementation.
+- **Algorithm source: [dzshzx / codexcomp](https://github.com/dzshzx/codexcomp).** The upstream Go implementation of result folding and continuation was ported from this project's `fold.py`.
+- **Mechanism source: [neteroster / CodexCont](https://github.com/neteroster/CodexCont).** The original `518n−2` truncation-detection rule and encrypted-reasoning replay approach.
+
+Thanks to these projects and their authors. CodexReflow adds HTTP/SSE/WebSocket compatibility improvements, automatic model matching and runtime diagnostics, and is maintained independently. It is not an official OpenAI or CLIProxyAPI plugin.
+
+Licensed under [MIT](LICENSE), with the original authors' copyrights and license notices retained. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt) for complete attribution and third-party licenses.
